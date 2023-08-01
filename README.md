@@ -40,32 +40,9 @@ Mebellerim is an ecommerce platform developed using ASP.NET Core, C#, and Entity
 
 ---
 
-## 🔧 Technologies & Tools
-
-Here are some of the technologies and tools I am proficient in:
-
-- **Backend Technologies**: ASP.NET Core, C#, Entity Framework
-- **Databases**: SQL Server, MySQL
-- **Tools & Version Control**: Visual Studio, Git
-
----
-
-## 🌱 Future Projects and Learning Goals
-
-I'm always seeking opportunities to enhance my skills and tackle new challenges. Some of my future projects and learning goals include:
-
-- **Learning Goal 1 - Docker and Containerization**: Exploring containerization technologies like Docker for better deployment and scalability.
-- **Learning Goal 2 - Serverless Architecture**: Implementing serverless architecture to build highly scalable applications.
-
----
-
 ## 📫 Get in Touch
 
 I'm open to collaboration, feedback, or any interesting discussions related to software development. Feel free to reach out to me via:
 
 - **Email**: rovshan.huseynov@turn.az
 - **LinkedIn**: [LinkedIn Profile](https://www.linkedin.com/in/rovshanhuseynov/)
-
----
-
-**Thank you for visiting my GitHub profile! 😄**
