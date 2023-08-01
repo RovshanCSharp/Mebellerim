@@ -1,0 +1,99 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+<style>
+    .subscribe-position {
+        background-color: #f8f8f8;
+        padding: 40px 0;
+    }
+    
+    .subscribe__title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .text-secondary {
+        color: #888;
+        font-size: 16px;
+    }
+    
+    .subscribe-form input {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .subscribe-form-button {
+        padding: 10px 30px;
+    }
+    
+    .success-message,
+    .error-message {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+</style>
+
+<section class="subscribe-position" style="background-image: url('img/blog-2.jpg');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="subscribe text-center">
+                    <h3 class="subscribe__title">Stay up-to-date wherever you are</h3>
+                    <p class="text-secondary">Subscribe to our newsletter</p>
+                    <div id="mc_embed_signup">
+                        <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-url="@Url.Action("AddNewsletter","Media")" data-ajax-complete="completed" class="subscribe-form form-inline mt-5 pt-1">
+                            <div class="form-group">
+                                <input class="form-control mb-1" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your email'" name="customerEmail">
+                            </div>
+                            <button class="btn btn-primary mb-1 subscribe-form-button" type="submit">Submit</button>
+                        </form>
+                        <div class="success-message text-success mt-3" style="display: none"></div>
+                        <div class="error-message text-danger mt-3" style="display: none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/5.0.0/imagesloaded.pkgd.min.js" integrity="sha512-kfs3Dt9u9YcOiIt4rNcPUzdyNNO9sVGQPiZsub7ywg6lRW5KuK1m145ImrFHe3LMWXHndoKo2YRXWy8rnOcSKg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    const subscribe = $(".subscribe-form input");
+    const error = $(".error-message");
+    const success = $(".success-message");
+    
+    function handleResponse(responseText) {
+        subscribe.val("");
+        success.hide();
+        error.hide();
+    
+        if (responseText === "Successful") {
+            success.text("Your email has been successfully registered");
+            success.show();
+        } else if (responseText === "EmptyError") {
+            error.text("Please enter your email");
+            error.show();
+        } else if (responseText === "InvalidEmail") {
+            error.text("The email is not valid");
+            error.show();
+        } else if (responseText === "CustomerEmailExist") {
+            error.text("Email already registered");
+            error.show();
+        } else if (responseText === "MoreThan256Character") {
+            error.text("Up to 256 characters are allowed");
+            error.show();
+        } else if (responseText === "Failed") {
+            error.text("A problem occurred while registering an email");
+            error.show();
+        }
+    }
+    
+    const completed = function(xhr) {
+        handleResponse(xhr.responseText);
+    };
+
+    </script>
+}

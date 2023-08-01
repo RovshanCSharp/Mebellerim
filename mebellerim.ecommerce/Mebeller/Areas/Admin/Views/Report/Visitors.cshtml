@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Mebeller.Data.Utilities
+@model IEnumerable<Mebeller.Areas.Admin.Model.Media.Visitor>
+
+@{
+    var search = ViewData["search"]?.ToString() ?? "";
+    var isEmpty = Convert.ToBoolean(ViewData["isEmpty"]);
+}
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="h2 mt-3">
+                    <h1 class="h2 d-inline">Visitors</h1>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Media</li>
+                    <li class="breadcrumb-item active">Visitors</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form asp-action="Visitors" method="get">
+                <div class="input-group mb-4">
+                    <input name="search" type="text" value="@search" class="form-control" placeholder="..." aria-label="...">
+                    <button type="submit" class="input-group-text" id="search-textbox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            @if (!isEmpty)
+            {
+                <table class="table table-responsive-sm table-striped table-bordered text-center table-light">
+                    <thead>
+                    <tr>
+                        <th class="cart-item-cells">IP address</th>
+                        <th class="cart-item-cells">Number of hits</th>
+                        <th class="cart-item-cells">Last seen</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var visitor in Model)
+                    {
+                        <tr>
+                            <td class="cart-item-cells align-middle">@visitor.VisitorIpAddress</td>
+                            <td class="cart-item-cells align-middle">@visitor.CountOfVisit</td>
+                            <td class="cart-item-cells align-middle">@visitor.LastVisitTime.ToSolarWithTime()</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
+                @await Html.PartialAsync("PartialPaging", "Visitors")
+            }
+            else
+            {
+                <div class="alert alert-danger text-left" role="alert">
+                    Visit list is empty
+                </div>
+            }
+        </div>
+    </div>
+</div>

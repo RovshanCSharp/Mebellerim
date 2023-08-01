@@ -1,0 +1,195 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.Model.Blog.AddBlogPost
+
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .file-delete {
+        position: relative;
+        top: -40px;
+        right: 12px
+    }
+    
+    .upload-btn {
+        border: 2px #17a2b8 dashed;
+        padding: 45px;
+        height: auto;
+        display: block;
+        cursor: pointer
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" href="/Admin/Blogs">Back</a>
+                    </div>
+                </ol>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Blogs</li>
+                    <li class="breadcrumb-item active">Add Blog Article</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-9 col-md-11 col-sm-12 m-auto">
+        <form asp-action="Add" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="heading" class="form-label">Heading</label>
+                <input type="text" required class="form-control" id="heading" asp-for="@Model.Heading">
+                <span class="text-danger" asp-validation-for="@Model.Heading"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="pageTitle" class="form-label">Page Title</label>
+                <input type="text" required class="form-control" id="pageTitle" asp-for="@Model.PageTitle">
+                <span class="text-danger" asp-validation-for="@Model.PageTitle"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea class="form-control" required id="content" asp-for="@Model.Content"></textarea>
+                <span class="text-danger" asp-validation-for="@Model.Content"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="shortDescription" class="form-label">Short Description</label>
+                <input type="text" required class="form-control" id="shortDescription" asp-for="@Model.ShortDescription">
+                <span class="text-danger" asp-validation-for="@Model.ShortDescription"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Select Images</label>
+                <div>
+                    <label for="uploadOption">Upload Image</label>
+                    <input type="radio" id="uploadOption" name="imageOption" value="upload" checked>
+                </div>
+                <div>
+                    <label for="linkOption">Use Image URL</label>
+                    <input type="radio" id="linkOption" name="imageOption" value="link">
+                </div>
+                <div id="uploadSection">
+                    <label for="attachment" class="w-100 text-center">
+                        <a class="upload-btn mb-2" role="button" aria-disabled="false">
+                            <i class="bi bi-cloud-arrow-up-fill text-info display-3"></i>
+                        </a>
+                    </label>
+                    <input type="file" accept=".png,.jpg,.jpeg" id="attachment" class="d-none" multiple/>
+                    <p id="files-area">
+                        <span id="filesList">
+                            <span id="files-names"></span>
+                        </span>
+                    </p>
+                </div>
+                <div id="linkSection" style="display: none;">
+                    <label for="featuredImageUrl" class="form-label">Featured Image Url</label>
+                    <input type="text" class="form-control" id="featuredImageUrl" asp-for="@Model.FeaturedImageUrl">
+                    <span class="text-danger" asp-validation-for="@Model.FeaturedImageUrl"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="urlHandle" class="form-label">Url Handle</label>
+                <input type="text" required class="form-control" id="urlHandle" asp-for="@Model.UrlHandle">
+                <span class="text-danger" asp-validation-for="@Model.UrlHandle"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="publishedDate" class="form-label">Published Date</label>
+                <input type="date" required class="form-control" id="publishedDate" asp-for="@Model.PublishedDate">
+                <span class="text-danger" asp-validation-for="@Model.PublishedDate"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" required class="form-control" id="author" asp-for="@Model.Author">
+                <span class="text-danger" asp-validation-for="@Model.Author"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="" class="form-label">Tags (comma separated)</label>
+                <input type="text" required class="form-control" id="tags" asp-for="@Model.Tags"/>
+                <span class="text-danger" asp-validation-for="Tags"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="isVisible" asp-for="@Model.Visible">
+                <label class="form-check-label" for="isVisible">
+                    Is Visible
+                </label>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+const uploadOption = document.getElementById('uploadOption');
+const linkOption = document.getElementById('linkOption');
+const uploadSection = document.getElementById('uploadSection');
+const linkSection = document.getElementById('linkSection');
+
+    uploadOption.addEventListener('change', function() {
+        uploadSection.style.display = 'block';
+        linkSection.style.display = 'none';
+    });
+
+    linkOption.addEventListener('change', function() {
+        uploadSection.style.display = 'none';
+        linkSection.style.display = 'block';
+    });
+</script>
+    <script>
+    const dt = new DataTransfer(); 
+
+    $("#attachment").on('change', function (e) {
+        for (let i = 0; i < this.files.length; i++) {
+            let fileBloc = $('<span/>', { class: 'file-block' }),
+                fileName = $('<img alt="" src=""/>', { class: 'productimages', src: URL.createObjectURL(this.files.item(i)), alt: this.files.item(i).name });
+            fileBloc.append('<span class="file-delete badge badge-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">\r\n  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>\r\n</svg></span>')
+                .append(fileName);
+            $("#filesList > #files-names").append(fileBloc);
+        }
+
+        for (let file of this.files) {
+            dt.items.add(file);
+        }
+
+        this.files = dt.files;
+
+        $('span.file-delete').click(function () {
+            let name = $(this).next('img.productimages').attr("alt");
+            $(this).parent().remove();
+            for (let i = 0; i < dt.items.length; i++) {
+                if (name === dt.items[i].getAsFile().name) {
+                    dt.items.remove(i);
+                }
+            }
+
+            document.getElementById('attachment').files = dt.files;
+        });
+    });
+</script>
+}

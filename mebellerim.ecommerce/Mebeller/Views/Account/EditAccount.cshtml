@@ -1,0 +1,220 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Account.EditAccountViewModel
+
+@inject IAccountService AccountService
+
+@{
+    ViewData["Title"] = "Account";
+}
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+    <header>
+        <div class="container text-center">
+            <h2 class="h2 title">Account</h2>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li><a href="/"><span class="icon icon-home"></span></a></li>
+                <li><a class="active" href="#">Edit Account</a></li>
+            </ol>
+        </div>
+    </header>
+</section>
+<hr/>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-md-0 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white text-center">
+                    <h5 class="mb-0">Edit</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="@Url.Action("ManageAccount")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-cogs mr-2"></i>Overview
+                    </a>
+                    <a href="@Url.Action("EditAccount")" class="list-group-item list-group-item-action active">
+                        <i class="fa fa-user mr-2"></i>Edit Account
+                    </a>
+                    <a href="@Url.Action("FavoriteProducts")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-heart mr-2"></i>Wishlist
+                    </a>
+                    <a href="@Url.Action("AccountOrders")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-shopping-cart mr-2"></i>Orders
+                    </a>
+                    <hr/>
+                    <form asp-action="LogOut" class="mt-3">
+                        <button class="btn btn-danger btn-block" type="submit">
+                            <i class="fa fa-sign-out mr-2"></i>Sign Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <form class="row contact_form" asp-action="EditAccount">
+                        <div class="col-md-6 form-group p_star">
+                            <label class="control-label">Name</label>
+                            <input class="form-control" id="first" placeholder="Enter your name" asp-for="FirstName">
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-6 form-group p_star">
+                            <label class="control-label">Last Name</label>
+                            <input class="form-control" id="last" placeholder="Enter your last name" asp-for="LastName">
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="control-label">Username</label>
+                            <input class="form-control" id="company" placeholder="Enter your username" asp-for="UserName">
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="control-label">Email <span class="current-password-label">(Email cannot be changed)</span></label>
+                            <input class="form-control" placeholder="Enter your email" asp-for="Email" readonly>
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="control-label">Mobile Number</label>
+                            <input class="form-control" placeholder="Enter your mobile number" asp-for="MobileNumber">
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <label class="control-label">Province</label>
+                            <input type="hidden" id="province" asp-for="UserProvince">
+                            <select id="provinces" class="form-control" onchange="AddCitiesByProvince(this.value)">
+                                <option value="">Select</option>
+                                <option value=" ,Agdam ,Agdash ,Agjabadi ,Astara ,Baku ,Balakan ,Barda ,Beylagan ,Bilasuvar ,Dashkesan ,Fizuli ,Ganja ,Gobustan ,Goychay ,Goygol ,Hajigabul ,Imishli ,Ismailli ,Julfa ,Khachmaz ,Khirdalan ,Khojaly ,Kurdamir ,Lankaran ,Lerik ,Masally ,Mingachevir ,Naftalan ,Nakhchivan ,Neftchala ,Oghuz ,Qabala ,Qakh ,Qazakh ,Quba ,Qubadli ,Qusar ,Saatli ,Sabirabad ,Salyan ,Shabran ,Shaki ,Shamakhi ,Shirvan ,Shusha ,Sumqayit ,Tartar ,Tovuz ,Ujar ,Yardimli ,Yevlakh ,Zangilan ,Zaqatala ,Zardab">Azerbaijan</option>
+                            </select>
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <label class="control-label">City</label>
+                            <input type="hidden" id="city" asp-for="UserCity">
+                            <select id="cities" class="form-control">
+                                <option>Please choose your province</option>
+                            </select>
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="control-label">Address</label>
+                            <textarea class="form-control" rows="5" placeholder="Enter your address" asp-for="UserAddress"></textarea>
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label class="control-label">Zip code</label>
+                            <input type="number" class="form-control" id="zip" placeholder="Enter your zip code" asp-for="UserZipCode">
+                            <span class="text-danger field-validation-valid"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            @{
+                                var isLoggedUserHasPasswordAsync =
+                                    await AccountService.DoesLoggedInUserHavePasswordAsync();
+                            }
+                            @if (isLoggedUserHasPasswordAsync)
+                            {
+                                <h5 class="mt-3">Change password</h5>
+                                <div class="form-group">
+                                    <label class="control-label current-password-label">Current password (leave blank if you don't want to change)</label>
+                                    <input class="form-control" placeholder="Enter your password" asp-for="UserCurrentPassword" />
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label current-password-label">New password (leave blank if you don't want to change)</label>
+                                    <input class="form-control" placeholder="Enter a new password" asp-for="UserNewPassword" />
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label current-password-label">Repeat New Password</label>
+                                    <input class="form-control" placeholder="Repeat Enter New Password" asp-for="ReNewPassword" />
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                            }
+                            else
+                            {
+                                <h5 class="mt-3">Add password</h5>
+                                <div class="form-group">
+                                    <label class="control-label current-password-label">New password (leave blank if you don't want to add)</label>
+                                    <input class="form-control" placeholder="Enter a new password" asp-for="UserFirstPassword" />
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label current-password-label">Repeat New Password</label>
+                                    <input class="form-control" placeholder="Repeat Enter New Password" asp-for="ReFirstPassword" />
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <input type="submit" value="Edit" class="custombtn button2">
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            @if (ViewData["SuccessMessage"] != null)
+                            {
+                                <div class="alert alert-success current-password-label" role="alert">@ViewData["SuccessMessage"]</div>
+                            }
+                            <div class="alert alert-danger text-left current-password-label" role="alert" asp-validation-summary="All"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        //Provinces And Cities
+
+        //Load Provinces And Cities
+
+        $(document).ready(function () {
+            $('#provinces option').filter(function () {
+                return $(this).html() === $("#province").val();
+            }).attr('selected', true);
+            const _cities = document.getElementById("cities");
+            const citiesList = $("#provinces option:selected").val().split(",");
+            for (i = 0; i < citiesList.length; i++) {
+                if (citiesList[i] !== "") {
+                    _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+                }
+            }
+            $('#cities option').filter(function () {
+                return $(this).html() === $("#city").val();
+            }).attr('selected', true);
+        });
+
+        //////
+
+        function AddCitiesByProvince(provincesvalue) {
+            const _cities = document.getElementById("cities");
+            _cities.options.length = 0;
+            if (provincesvalue !== "") {
+                $("#province").val($("#provinces option:selected").text());
+                const citiesList = provincesvalue.split(",");
+                for (i = 0; i < citiesList.length; i++) {
+                    if (citiesList[i] !== "") {
+                        _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+                    }
+                }
+            } else {
+                $("#province").val("");
+            }
+        }
+
+        $(document).ready(function () {
+            $("#cities").change(function () {
+                if ($(this).val() !== "Please choose your province") {
+                    $(this).prev().val($(this).val());
+                }
+            });
+        });
+
+    </script>
+
+}

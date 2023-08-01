@@ -1,0 +1,197 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Mebeller.Models.Media
+ @using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model IEnumerable<Mebeller.Models.Product.Product>
+
+@inject IAccountService AccountService
+
+<style>
+    .popup-buttons {
+        display: flex; 
+        justify-content: flex-end;
+        align-items: center; 
+    }
+    
+    .popup-buttons a {
+        display: flex; 
+        align-items: center;
+        margin-right: 10px;
+    }
+    
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+
+</style>
+
+@{
+    var products = Model.OrderByDescending(p => p.ProductSalesCount).Take(12).ToList();
+}
+
+@foreach (var product in products)
+{
+  
+    var productImagePath = product.Images.Any() ? $"/img/{product.Images.FirstOrDefault()?.ImagePath}" : Image.DefaultImagePath;
+    var quickViewId = $"quickview-{product.ProductId}";
+    var isUserSignedIn = AccountService.IsUserSignedIn();
+
+    <div class="col-md-4 col-xs-6">
+        <article>
+            <div class="info">
+                @if (isUserSignedIn)
+                {
+                    var isProductInFavorites = await AccountService.IsProductInLoggedUserFavoriteProductsAsync(product.ProductId);
+                    var action = isProductInFavorites ? "RemoveProductFromUserFavoriteProducts" : "AddProductToUserFavoriteProducts";
+                    var iconClass = isProductInFavorites ? "glyphicon glyphicon-heart" : "glyphicon glyphicon-heart-empty";
+                    var favoriteActionTitle = isProductInFavorites ? "Remove from Favorites" : "Add to Favorites";
+                    var favoriteActionDataTitle = isProductInFavorites ? "Remove from Favorites" : "Add to Favorites";
+       
+                    <span class="@favoriteActionTitle">
+                        <a asp-controller="Product" class="@iconClass" asp-action="@action" asp-route-favoriteProductId="@product.ProductId" title="@favoriteActionTitle" data-title="@favoriteActionDataTitle">
+                        </a>
+                    </span>
+                }
+                <span>
+                    <a href="#@quickViewId" class="mfp-open" data-title="Quick wiew"><i class="icon icon-eye"></i></a>
+                </span>
+            </div>
+
+            <div class="btn btn-add">
+                <form id="@product.ProductId" asp-controller="Product" asp-action="AddProductToCart" method="post">
+                    <input type="hidden" value="@product.ProductId" name="productId" />
+                    <input type="hidden" id="required-quantity" value="1" name="requestedQuantity" />
+                    <input type="hidden" id="product-variation-id" value="-1" name="productVariationId" />
+                    <a href="#" onclick="document.getElementById('@product.ProductId').submit(); return false;">
+                        <i class="icon icon-cart"></i>
+                    </a>
+                </form>
+            </div>
+
+            <div class="figure-grid">
+                
+                <div class="image" style="max-height: 500px;">
+                    <a asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@product.ProductId" class="mfp-open">
+                        <img src="@productImagePath" alt="" style="max-height: 500px; min-width: 100px;"/>
+                    </a>
+                </div>
+                <div class="text">
+                    <h2 class="title h4">
+                        <a asp-action="ProductDetails" asp-controller="Product" asp-route-productId="@product.ProductId">@product.ProductName</a>
+                    </h2>
+                    <sup>@product.ProductPrice.ToString("C")</sup>
+                    <span class="description clearfix">@product.ProductDescription</span>
+                </div>
+            </div>
+        </article>
+    </div>
+
+
+    <!-- Quick view modal for the current product -->
+    <div id="@quickViewId" class="popup-main mfp-hide">
+        <!-- Add the contents of the quick view modal here -->
+        <div class="product">
+                
+            <!-- === popup-title === -->
+                
+            <div class="popup-title">
+                <div class="h1 title">@product.ProductName 
+                    @if (product.Categories.Any())
+                    {
+                        <small>
+                            @product.Categories.First().CategoryName
+                        </small>
+                    }
+                    else
+                    {
+                        <small>
+                            Category: 
+                        </small>
+                    }
+                </div>
+            </div>
+                            
+            <!-- === product gallery === -->
+            
+            @if (product.Images.Any())
+            {
+                <div class="owl-product-gallery">
+                    @foreach (var image in product.Images)
+                    {
+                        <img src="/img/@(image.ImagePath)" alt=""/>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="owl-product-gallery">
+                    <img src="/img/product-1.png" alt="" width="640" />
+                    <img src="/img/product-2.png" alt="" width="640" />
+                    <img src="/img/product-3.png" alt="" width="640" />
+                    <img src="/img/product-4.png" alt="" width="640" />
+                </div>
+            }
+                
+            <!-- === product-popup-info === -->
+                
+            <div class="popup-content">
+                <div class="product-info-wrapper">
+                    <div class="row">
+                
+                        <!-- === left-column === -->
+                
+                        <div class="col-sm-6">
+                            <div class="info-box">
+                                <strong>Description</strong>
+                                <span>@product.ProductDescription</span>
+                            </div>
+                        </div>
+                
+                        <!-- === right-column === -->
+                
+                        <div class="col-sm-6">
+                            
+                            <div class="info-box">
+                                <span>
+                                    <strong>Availability</strong>
+                                </span>
+                                <span>
+                                    <i class="fa @(product.ProductQuantityInStock > 0 ? "fa-check-square-o" : "fa-truck")"></i>
+                                    @(product.ProductQuantityInStock > 0 ? "In stock" : "Out of stock")
+                                </span>
+                            </div>
+                        </div>
+                
+                    </div> 
+                </div> 
+            </div>
+            <!-- === product-popup-footer === -->
+                
+            <div class="popup-table">
+                <div class="popup-cell">
+                    <div class="price">
+                        <span class="h3">@product.ProductPrice.ToString("C")</span>
+                    </div>
+                </div>
+                <div class="popup-cell">
+                    <div class="popup-buttons">
+                        <a asp-controller="Product" asp-action="Index">
+                            <span class="icon icon-eye"></span>
+                            <span class="hidden-xs"></span>
+                        </a>
+                        <form id="@product.ProductId" asp-controller="Product" asp-action="AddProductToCart" method="post">
+                            <input type="hidden" value="@product.ProductId" name="productId" />
+                            <input type="hidden" value="1" name="requestedQuantity" />
+                            <input type="hidden" value="-1" name="productVariationId" />
+                            <a href="#" onclick="document.getElementById('@product.ProductId').submit(); return false;">
+                                <span class="icon icon-cart"></span>
+                                <span class="hidden-xs"></span>
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

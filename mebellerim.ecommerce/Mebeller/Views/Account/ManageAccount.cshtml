@@ -1,0 +1,64 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IAccountService AccountService
+
+@{
+  ViewData["Title"] = "Account";
+  var loggedUser = await AccountService.GetLoggedUserAsync();
+  var loggedUserName = loggedUser.UserName;
+}
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+  <header>
+    <div class="container text-center">
+      <h2 class="h2 title">Account</h2>
+      <ol class="breadcrumb breadcrumb-inverted">
+        <li><a href="/"><span class="icon icon-home"></span></a></li>
+        <li><a class="active" href="#">Dashboard</a></li>
+      </ol>
+    </div>
+  </header>
+</section>
+
+<hr/>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-4 mb-md-0 mb-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white text-center">
+          <h5 class="mb-0">Manage</h5>
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action active">
+            <i class="fa fa-cogs mr-2"></i>Overview
+          </a>
+          <a href="@Url.Action("EditAccount")" class="list-group-item list-group-item-action">
+            <i class="fa fa-user mr-2"></i>Edit Account
+          </a>
+          <a href="@Url.Action("FavoriteProducts")" class="list-group-item list-group-item-action">
+            <i class="fa fa-heart mr-2"></i>Wishlist
+          </a>
+          <a href="@Url.Action("AccountOrders")" class="list-group-item list-group-item-action">
+            <i class="fa fa-shopping-cart mr-2"></i>Orders
+          </a>
+          <hr/>
+          <form asp-action="LogOut" class="mt-3">
+            <button class="btn btn-danger btn-block" type="submit">
+              <i class="fa fa-sign-out mr-2"></i>Sign Out
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h2 class="my-4">Hello, @loggedUserName!</h2>
+          <p class="lead">Through your account dashboard, you can view your recent orders, edit your account details and password.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr/>

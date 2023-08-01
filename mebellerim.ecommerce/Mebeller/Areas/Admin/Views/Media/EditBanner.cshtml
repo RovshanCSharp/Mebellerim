@@ -1,0 +1,150 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.Banners.EditBannerViewModel
+
+@{
+    ViewData["Title"] = "Banner Editing";
+}
+
+@section Styles
+{
+    <style>
+        .custom-file-input ~ .custom-file-label::after {
+            content: "Change";
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Media" asp-action="Banners">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Banners</li>
+                    <li class="breadcrumb-item active">Edit Banner</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7 col-md-9 col-sm-12 m-auto">
+        <form asp-action="EditBanner" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="control-label" for="BannerTitle">Title</label>
+                <input class="form-control" asp-for="BannerTitle">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="BannerTitle">LinkUrl</label>
+                <input class="form-control" id="BannerTitle" asp-for="BannerLink">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                <textarea id="editor" asp-for="BannerDescription">
+                </textarea>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label d-block">Banner Photo</label>
+                <img src="/img/@Model.BannerCurrentImagePath" class="img-fluid img-thumbnail" id="current-banner-image" alt="Banner Current Photo">
+            </div>
+            <div class="form-group">
+                <div class="custom-file" id="customFile">
+                    <input type="file" onchange="FileChanged(this)" 
+                           class="custom-file-input" id="exampleInputFile" 
+                           aria-describedby="fileHelp" asp-for="BannerImage">
+                    <label class="custom-file-label" for="exampleInputFile">
+                        Change Banner Photo
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label d-block">Banner Type</label>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline1" class="custom-control-input" value="true" asp-for="IsPrimaryBanner">
+                    <label class="custom-control-label" for="customRadioInline1">Primary banner</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline2" class="custom-control-input" value="false" asp-for="IsPrimaryBanner">
+                    <label class="custom-control-label" for="customRadioInline2">Sub</label>
+                </div>
+            </div>
+            <input type="hidden" asp-for="BannerId" />
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-block btn-primary">
+            </div>
+            @if (ViewData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3" role="alert">@ViewData["SuccessMessage"]</div>
+            }
+            <div class="alert alert-danger text-left mt-3" role="alert" asp-validation-summary="All"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="/libs/Ckeditor5/build/ckeditor.js"></script>
+    <script>
+
+        function FileChanged(files) {
+            $("#current-banner-image").attr("src", URL.createObjectURL(files.files.item(0)));
+        }
+        ClassicEditor.create(document.querySelector('#editor'), {
+            image: {
+                // Configure the available styles.
+                styles: [
+                    'alignLeft', 'alignCenter', 'alignRight'
+                ],
+        
+                // Configure the available image resize options.
+                resizeOptions: [
+                    {
+                        name: 'resizeImage:original',
+                        label: 'Original',
+                        value: null
+                    },
+                    {
+                        name: 'resizeImage:50',
+                        label: '50%',
+                        value: '50'
+                    },
+                    {
+                        name: 'resizeImage:75',
+                        label: '75%',
+                        value: '75'
+                    }
+                ],
+        
+                // You need to configure the image toolbar, too, so it shows the new style
+                // buttons as well as the resize buttons.
+                toolbar: [
+                    'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
+                    '|',
+                    'resizeImage',
+                    '|',
+                    'imageTextAlternative'
+                ]
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    </script>
+}

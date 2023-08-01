@@ -1,0 +1,144 @@
+﻿@using Mebeller.Models.Media
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Product.CartCheckOutViewModel
+<style>
+    .cart-wrapper {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        margin-bottom: 10px;
+    }
+
+    .table-responsive {
+        margin-bottom: 15px;
+    }
+
+    .table th {
+        font-weight: bold;
+    }
+
+    .shopping-cart-images {
+        max-height: 60px;
+        max-width: 60px;
+    }
+
+    .product-count {
+        width: 80px;
+    }
+
+    .title {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .empty-cart-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-top: 50px;
+    }
+
+    .empty-cart-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .empty-cart-message {
+        text-align: center;
+    }
+
+    .proceed-to-checkout-button {
+        font-size: 14px;
+        margin-left: 10px;
+        padding: 6px 10px;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="cart-wrapper">
+    @if (Model?.Order?.OrdersDetails is {Count: > 0 })
+    {
+        @if (ViewData["Message"] != null)
+        {
+            <div class="alert alert-info rounded-0" role="alert">
+                @ViewData["Message"]
+            </div>
+        }
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var orderDetails in Model.Order.OrdersDetails)
+                {
+                    var product = orderDetails.Product;
+                    var productPrice = product?.ProductPrice ?? 0;
+                    var productImagePath = product?.Images is {Count: > 0 }
+                        ? $"/img/{product.Images.FirstOrDefault()?.ImagePath ?? Image.DefaultImagePath}"
+                        : Image.DefaultImagePath;
+
+                    <tr>
+                        <td>
+                            <div class="media align-items-center">
+                                <img class="shopping-cart-images thumbnail" src="@productImagePath" alt="Product Image">
+                                <div class="media-body ml-2">
+                                    <h6 class="text-dark font-weight-bold" style="font-size: 14px">@product?.ProductName</h6>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="media align-items-center">
+                                <div class="input-group product-count">
+                                    <input type="hidden" value="@orderDetails.Product.ProductQuantityInStock"/>
+                                    <input readonly id="sst" value="@orderDetails.OrderDetailsQuantity" class="form-control input-text qty order-details-quantities"/>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="media align-items-center">
+                                <div class="title">@(productPrice != 0 ? $"{productPrice:C}" : "Free")</div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-cart-wrapper">
+            <div class="empty-cart-icon">
+                <i class="fa fa-shopping-cart"></i>
+            </div>
+            <div class="empty-cart-message">
+                <h5>Your cart is empty</h5>
+            </div>
+        </div>
+    }
+
+    <div class="clearfix">
+        <div class="row">
+            <div class="col-xs-6">
+                <a asp-action="Index" asp-controller="Product" class="btn btn-clean-dark">
+                    <i class="fa fa-product-hunt "></i>
+                </a>
+            </div>
+            <div class="col-xs-6 text-right">
+                <a href="Shopping-Cart">
+                    <button type="button" class="btn btn-primary border-0 proceed-to-checkout-button">
+                        <i class="fa fa-shopping-cart"></i>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+

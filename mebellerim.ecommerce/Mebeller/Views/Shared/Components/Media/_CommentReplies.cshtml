@@ -1,0 +1,16 @@
+﻿@using Mebeller.Data.Utilities
+@model IEnumerable<Mebeller.Models.Media.Comment>
+
+@foreach (var commentReply in Model.Where(p => p.IsConfirmed).OrderByDescending(p => p.IsAdminReplied))
+{
+    <div class="comment-block">
+        <div class="comment-user">
+            <div><img src="/img/user-2.jpg" alt="Alternate Text" width="70"/></div>
+            <h5>@commentReply.User?.UserName @if (commentReply.IsAdminReplied) { <span class="badge badge-danger adminReply">Administrator</span> }</h5>
+            <small>@commentReply.SubmitTime.ToSolarWithTime()</small>
+        </div>
+        <div class="comment-desc">
+            <p>@commentReply.CommentDescription</p>
+        </div>
+    </div>
+}

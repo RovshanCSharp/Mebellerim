@@ -1,0 +1,38 @@
+﻿@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+@{
+    var doesModelHasAnyProduct = Model.Products.Any();
+}
+
+<section class="products">
+
+    <div class="container">
+
+        <!-- === header title === -->
+
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Popular products</h2>
+                    <div class="text">
+                        <p>Check out our latest collections</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @if (doesModelHasAnyProduct)
+        {
+            <div class="row">
+                @{
+                    await Html.RenderPartialAsync("Components/Products/PartialBestSellingProducts", Model.Products);
+                }
+            </div>
+        }
+
+        <div class="wrapper-more">
+            <a href="/Products" class="btn btn-main">View store</a>
+        </div>
+
+    </div> 
+</section>

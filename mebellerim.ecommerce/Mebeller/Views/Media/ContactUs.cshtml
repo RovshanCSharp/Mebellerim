@@ -1,0 +1,301 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Configuration
+@model Mebeller.Areas.Admin.Model.Media.Message
+@inject IConfiguration Configuration
+
+@{
+    Layout = "Home/_Layout";
+}
+
+<style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+
+<!-- ========================  Main header ======================== -->
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+    <header>
+        <div class="container text-center">
+            <h2 class="h2 title">Contact</h2>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li><a href="/"><span class="icon icon-home"></span></a></li>
+                <li><a class="active" href="#">Contact</a></li>
+            </ol>
+        </div>
+    </header>
+</section>
+
+<!-- ========================  Contact ======================== -->
+
+<section class="contact">
+
+    <!-- === Google map === -->
+
+    <div id="map">
+        
+    </div>
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+
+                <div class="contact-block">
+
+                    <div class="contact-info">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <figure class="text-center">
+                                    <span class="icon icon-map-marker"></span>
+                                    <figcaption>
+                                        <strong>Where are we?</strong>
+                                        <span>200 12th Ave, New York, <br />NY 10001, USA</span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-sm-4">
+                                <figure class="text-center">
+                                    <span class="icon icon-phone"></span>
+                                    <figcaption>
+                                        <strong>Call us</strong>
+                                        <span>
+                                            <strong>T</strong> +1 222 333 4444 <br />
+                                            <strong>F</strong> +1 222 333 5555
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-sm-4">
+                                <figure class="text-center">
+                                    <span class="icon icon-clock"></span>
+                                    <figcaption>
+                                        <strong>Working hours</strong>
+                                        <span>
+                                            <strong>Mon</strong> - Sat: 10 am - 6 pm <br />
+                                            <strong>Sun</strong> 12pm - 2 pm
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="banner">
+                        <div class="row">
+                            <div class="col-md-offset-1 col-md-10 text-center">
+                                <h2 class="title">Send an email</h2>
+                                <p>
+                                    Thank you for your interest in our Furniture Shop. We are passionate about providing creative and high-quality furniture products for your home.
+                                    If you have any questions about our furniture or need assistance, please use this form to reach out to us. We will respond to your inquiry promptly.
+                                </p>
+
+                                <div class="contact-form-wrapper">
+
+                                    <a class="btn btn-clean open-form" data-text-open="Contact us via form" data-text-close="Close form">Contact us via form</a>
+
+                                    <div class="contact-form clearfix">
+                                        <form asp-action="ContactUs" class="form-contact contact_form" id="contactForm">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <input asp-for="MessageSenderName" class="form-control" id="name" type="text" placeholder="Your name" >
+                                                        <span asp-validation-for="MessageSenderName"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <input asp-for="MessageSenderEmail" class="form-control" id="email" placeholder="Your email">
+                                                        <span asp-validation-for="MessageSenderEmail"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <input  asp-for="MessageSubject" class="form-control" id="subject" placeholder="Subject" >
+                                                        <span asp-validation-for="MessageSubject"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <textarea asp-for="MessageDescription" class="form-control different-control w-100" id="message" cols="30" rows="5"></textarea>
+                                                        <span asp-validation-for="MessageDescription"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="g-recaptcha" data-sitekey="@Configuration["reCAPTCHA:SiteKey"]"></div>
+                                                        <span class="field-validation-error recaptcha-error" style="display: none;">Please tick I'm not a robot</span>
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div class="col-md-12 text-center">
+                                                    <input type="submit" class="btn btn-clean" value="Send message" />
+                                                </div>
+                                                @if (ViewData["SuccessMessage"] != null)
+                                                {
+                                                    <div class="alert alert-success mt-4" role="alert">@ViewData["SuccessMessage"]</div>
+                                                }
+                                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4">
+                                <figure>
+                                    <figcaption>
+                                        <strong>Sales</strong>
+                                        <span>
+                                            <strong>T</strong> +1 125 251 4586 <br />
+                                            <strong>F</strong> +1 251 333 5555
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-xs-6 col-sm-4">
+                                <figure>
+                                    <figcaption>
+                                        <strong>Services</strong>
+                                        <span>
+                                            <strong>T</strong> +1 654 333 8541 <br />
+                                            <strong>F</strong> +1 125 251 5555
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-xs-6 col-sm-4">
+                                <figure>
+                                    <figcaption>
+                                        <strong>Support</strong>
+                                        <span>
+                                            <strong>T</strong> +1 222 852 9632 <br />
+                                            <strong>F</strong> +1 357 333 5555
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-xs-6 col-sm-4">
+                                <figure>
+                                    <figcaption>
+                                        <strong>Human resources</strong>
+                                        <span>
+                                            <strong>T</strong> +1 963 333 8745 <br />
+                                            <strong>F</strong> +1 159 333 5555
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-xs-6 col-sm-4">
+                                <figure>
+                                    <figcaption>
+                                        <strong>Factory</strong>
+                                        <span>
+                                            <strong>T</strong> +1 753 333 1259 <br />
+                                            <strong>F</strong> +1 247 652 5555
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                            <div class="col-xs-6 col-sm-4">
+                                <figure>
+                                    <figcaption>
+                                        <strong>Delivery</strong>
+                                        <span>
+                                            <strong>T</strong> +1 134 197 7532 <br />
+                                            <strong>F</strong> +1 291 468 4563
+                                        </span>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div><!--col-sm-8-->
+        </div> <!--/row-->
+    </div><!--/container-->
+</section>
+
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=@Configuration["GoogleMaps:ApiKey"]&callback=initMap"></script>
+<script>
+      function initMap() {
+        const location = {lat: 40.4093, lng: 49.8671};
+        const map = new google.maps.Map(document.getElementById('map'), {
+          center: location,
+          zoom: 8,
+          mapId: '@Configuration["GoogleMaps:MapId"]'
+        });
+      }
+</script>
+<script>
+      initMap();
+</script>
+
+
+<script>
+// Add this function to validate the reCAPTCHA response
+function validateCaptchaResponse(token) {
+    return new Promise(function(resolve, reject) {
+        fetch('/Home/ValidateCaptchaResponse?token=' + token)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(json) {
+                if (json.success) {
+                    resolve(true);
+                } else {
+                    reject('reCAPTCHA validation failed. Please try again.');
+                }
+            });
+    });
+}
+
+// Add this function to attach a callback to the reCAPTCHA widget
+function attachCaptchaCallback(callback) {
+    if (typeof grecaptcha !== 'undefined') {
+        grecaptcha.ready(function() {
+            grecaptcha.execute('@Configuration["reCAPTCHA:SiteKey"]', {action: 'submit'}).then(function(token) {
+                callback(token);
+            });
+        });
+    }
+}
+
+// Add this code to handle the form submission
+$(document).ready(function() {
+    const $form = $('form');
+    const $recaptchaError = $('.recaptcha-error');
+
+    $form.on('submit', function(event) {
+        event.preventDefault();
+
+        attachCaptchaCallback(function(token) {
+            validateCaptchaResponse(token)
+                .then(function() {
+                    $recaptchaError.hide();
+                    $form.unbind('submit').submit();
+                })
+                .catch(function(error) {
+                    $recaptchaError.text(error).show();
+                });
+        });
+    });
+});
+
+</script>

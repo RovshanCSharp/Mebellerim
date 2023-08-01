@@ -1,0 +1,90 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IProductService ProductService
+@inject IAccountService AccountService
+
+@{
+    var isUserSignedIn = AccountService.IsUserSignedIn();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"]</title>
+    <partial name="Components/Layout/_Styles"/>
+    
+    @await RenderSectionAsync("Styles", false)
+</head>
+<body>
+
+<div class="page-loader"></div>
+<div class="wrapper">
+        <nav class="navbar-fixed">
+            <div class="container">
+                <!-- Top navigation -->
+                <div class="navigation navigation-top clearfix">
+                    <ul>
+                        <li>
+                            <a href="#" title="Facebook">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" title="Twitter">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" title="YouTube">
+                                <i class="fa fa-youtube"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/My-Account" title="manage" class="open-login">
+                                <i class="icon icon-user"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" title="Search" class="open-search">
+                                <i class="icon icon-magnifier"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/Shopping-Cart" title="Cart" class="open-cart">
+                                <i class="icon icon-cart"></i>
+                                <span class="nav-shop__circle">
+                                    @(isUserSignedIn ? await ProductService.GetLoggedUserOpenOrderDetailsCountAsync() : 0)
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+        
+                <!-- ==========  Main navigation ========== -->
+                <partial name="Components/Layout/_MainNavigation"/>
+        
+                <!-- ==========  Search wrapper ========== -->
+                <div class="search-wrapper">
+                    <form asp-action="Index" asp-controller="Product">
+                        <input class="form-control" placeholder="Search..."/>
+                        <button class="btn btn-main" type="submit">Go!</button>
+                    </form>
+                </div>
+                
+            </div>
+        </nav>
+      <main>
+          @RenderBody()
+      </main>  
+        
+        <partial name="Components/Layout/_Footer"/>
+    </div>
+
+<partial name="Components/Layout/_Scripts"/>
+
+@await RenderSectionAsync("Scripts", false)
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+@{
+    var blogs = Model?.BlogPosts?.OrderByDescending(p => p.BlogHits).Take(8);
+    
+    var availableCategoriesTreeViews =
+        Model?.CategoriesTreeViews
+            .Where(p => p.BlogsCount is 0 or > 0);
+}
+
+
+<section class="main-header" style="background-image: url(img/gallery-2.jpg)">
+    <header>
+        <div class="container">
+            <h1 class="h2 title">Blog</h1>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li><a href="/"><span class="icon icon-home"></span></a></li>
+                <li><a href="/Blog">Blog</a></li>
+            </ol>
+        </div>
+    </header>
+</section>
+
+<!-- ========================  Blog ======================== -->
+@if (blogs != null && blogs.Any())
+{
+<section class="blog">
+    <div class="container">
+        <div class="pre-header hidden">
+            <div>
+                <h2 class="h3 title">Category name
+                </h2>
+            </div>
+            <div>
+                <div class="sort-bar pull-right">
+                    <div class="sort-results">
+                        <!--Items counter-->
+                        <span>Showing all <strong>50</strong> of <strong>3,250</strong> items</span>
+                        <!--Showing result per page-->
+                        <div class="input-group mb-4">
+                            <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="..." aria-label="...">
+                        </div>
+                        <!--Grid-list view-->
+                        <span class="grid-list">
+                            <a href="blog-grid.html"><i class="fa fa-th-large"></i></a>
+                            <a href="blog-list.html"><i class="fa fa-align-justify"></i></a>
+                            <a href="javascript:void(0);" class="toggle-filters-mobile"><i class="fa fa-search"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <!-- === blog-content === -->
+
+            <div class="col-md-9">
+                <div class="row">
+                    @if (Model?.BlogPosts != null)
+                    {
+                        foreach (var blogPost in Model.BlogPosts)
+                        {
+                            <div class="col-sm-4">
+                                <article>
+                                    <a href="/blog/@blogPost.UrlHandle">
+                                        <div class="image" style="background-image:url(@blogPost.FeaturedImageUrl)">
+                                            <img src="#" alt="" />
+                                        </div>
+                                        <div class="entry entry-table">
+                                            <div class="date-wrapper">
+                                                <div class="date">
+                                                    <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                                    <strong>@blogPost.PublishedDate.Day</strong>
+                                                    <span>@blogPost.PublishedDate.Year</span>
+                                                </div>
+                                            </div>
+                                            <div class="title">
+                                                <h2 class="h5">@blogPost.PageTitle</h2>
+                                            </div>
+                                        </div>
+                                        <div class="show-more">
+                                            <span class="btn btn-main btn-block">Read more</span>
+                                        </div>
+                                    </a>
+                                </article>
+                            </div>
+                        }
+                    }
+                </div>
+                <!-- === pagination === -->
+                @await Html.PartialAsync("PartialPaging", "Index")
+                <!--/pagination-->
+            </div>
+
+            <!-- === blog-menu === -->
+            <div class="col-md-3">
+                <aside>
+                    <!-- === box-search === -->
+
+                    <form method="get" asp-action="List">
+                        <div class="box box-search">
+                            <input type="text" name="search" value="@ViewData["search"]" class="form-control" placeholder="Search the blog" />
+                            <button type="submit" class="btn btn-main btn-sm">Go!</button>
+                        </div>
+                    </form>
+                    <!-- === box-categories === -->
+                    
+                    <div class="box box-categories">
+                        <h5 class="title">Blog categories</h5>
+                        
+                        @foreach (var blog in availableCategoriesTreeViews!)
+                        {
+                            <ul>
+                                <li><a href="#">@(blog.CategoryName ?? "Default Category")</a></li>
+                            </ul>
+                        }
+                    </div>
+                    <!-- === box-posts === -->
+                    
+                    <div class="box box-posts">
+                        <h5 class="title">Popular posts</h5>
+                        @foreach (var blog in blogs)
+                        {
+                            <ul>
+                                <li>
+                                    <a href="/blog/@blog.UrlHandle">
+                                        <span class="date">
+                                            <span>@blog.PublishedDate.ToString("MMM")</span>
+                                            <span>@blog.PublishedDate.Day</span>
+                                        </span>
+                                        <span class="text">@blog.ShortDescription</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    </div>
+                    <!-- === box-tags === -->
+
+                    @if (Model?.Tags != null)
+                    {
+                        foreach (var tag in Model.Tags)
+                        {
+                            <div class="box box-tags">
+                                <h5 class="title">Popular posts</h5>
+                                <ul class="clearfix">
+                                    <li><a href="/tags/@tag.Name">@tag.Name</a></li>
+                                </ul>
+                            </div>
+                        }
+                    }
+                </aside>
+            </div>
+        </div>
+    </div>
+</section>
+}
+else
+{
+    <section class="blog">
+
+    <div class="container">
+
+        <div class="pre-header hidden">
+            <div>
+                <h2 class="h3 title">Category name
+                </h2>
+            </div>
+            <div>
+                <div class="sort-bar pull-right">
+                    <div class="sort-results">
+                       
+                        <div class="input-group mb-4">
+                            <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="..." aria-label="...">
+                        </div>
+                        <!--Grid-list view-->
+                        <span class="grid-list">
+                            <a href="#"><i class="fa fa-th-large"></i></a>
+                            <a href="/Blog"><i class="fa fa-align-justify"></i></a>
+                            <a href="javascript:void(0);" class="toggle-filters-mobile"><i class="fa fa-search"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- === blog-content === -->
+
+            <div class="col-md-9">
+
+                <div class="row">
+                    <div class="text-center">
+                        <h2>No blog posts found.</h2>
+                        <p>There is currently nothing available to display.</p>
+                    </div>
+                </div>
+                
+                <!--/pagination-->
+
+            </div>
+
+            <!-- === blog-menu === -->
+
+            <div class="col-md-3">
+
+                <aside>
+
+                    <!-- === box-search === -->
+
+                    <form method="get" asp-action="List">
+                        <div class="box box-search">
+                            <input type="text" name="search" value="@ViewData["search"]" class="form-control" placeholder="Search the blog" />
+                            <button type="submit" class="btn btn-main btn-sm">Go!</button>
+                        </div>
+                    </form>
+
+
+                    <!-- === box-categories === -->
+                    
+                    <div class="box box-categories">
+                        <h5 class="title">Blog categories</h5>
+                        
+                        @foreach (var blog in availableCategoriesTreeViews!)
+                        {
+                            <ul>
+                                <li><a href="#">@(blog.CategoryName ?? "Default Category")</a></li>
+                            </ul>
+                        }
+
+                    </div>
+
+                    <!-- === box-posts === -->
+                    
+                    <div class="box box-posts">
+                        <h5 class="title">Popular posts</h5>
+                        @if (blogs != null)
+                        {
+                            foreach (var blog in blogs)
+                            {
+                                <ul>
+                                    <li>
+                                        <a href="/blog/@blog.UrlHandle">
+                                            <span class="date">
+                                                <span>@blog.PublishedDate.ToString("MMM")</span>
+                                                <span>@blog.PublishedDate.Day</span>
+                                            </span>
+                                            <span class="text">@blog.ShortDescription</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </div>
+                    
+
+                    <!-- === box-tags === -->
+
+                    @if (Model?.Tags != null)
+                    {
+                        foreach (var tag in Model.Tags)
+                        {
+                            <div class="box box-tags">
+                                <h5 class="title">Popular posts</h5>
+                                <ul class="clearfix">
+                                    <li><a href="/tags/@tag.Name">@tag.Name</a></li>
+                                </ul>
+                            </div>
+                        }
+                    }
+
+                </aside>
+            </div>
+
+
+        </div>
+        <!--/row-->
+
+
+    </div>
+    <!--/container-->
+</section>
+    
+    
+}

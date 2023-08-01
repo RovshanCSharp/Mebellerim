@@ -1,0 +1,75 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.Product.Discount
+
+@{
+    ViewData["Title"] = "Add coupon";
+}
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Order" asp-action="Discounts">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Coupons</li>
+                    <li class="breadcrumb-item active">Add coupon</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form asp-action="AddDiscount">
+                <div class="row">
+                    <div class="col-lg-6 mx-auto">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="control-label">Discount Code</label>
+                                    <input class="form-control" asp-for="DiscountCode" placeholder="For example, DS56KD">
+                                    <span asp-validation-for="DiscountCode" class="text-danger field-validation-valid"></span>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="control-label">Discount rate</label>
+                                        <input class="form-control" asp-for="Amount" placeholder="20">
+                                        <span asp-validation-for="Amount" class="text-danger field-validation-valid"></span>
+                                    </div>
+                                </div>
+
+                                <hr class="mb-4 mt-0"/>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary float-end">Save Discount</button>
+                                </div>
+                                @if (ViewData["SuccessMessage"] != null)
+                                {
+                                    <div class="alert alert-success mt-3" role="alert">@ViewData["SuccessMessage"]</div>
+                                }
+                                else
+                                {
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

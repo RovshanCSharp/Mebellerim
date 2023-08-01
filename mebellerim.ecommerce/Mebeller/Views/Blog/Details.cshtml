@@ -1,0 +1,268 @@
+﻿@model Mebeller.Models.ViewModels.Home.IndexViewModel
+@using Mebeller.Data
+@using Mebeller.Data.Context
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Configuration
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IConfiguration Configuration
+
+
+<!-- ========================  Main header ======================== -->
+
+@if (Model.BlogPost != null)
+{
+    <!-- ========================  Main header ======================== -->
+
+    <section class="main-header main-header-blog" style="background-image: url(img/gallery-1.jpg)">
+        <header>
+            <div class="container text-center">
+                <h2 class="h2 title">Blog</h2>
+                <ol class="breadcrumb breadcrumb-inverted">
+                    <li><a href="/"><span class="icon icon-home"></span></a></li>
+                    <li><a href="/Categories">Blog Category</a></li>
+                    <li><a class="active" href="/Blog">Articles</a></li>
+                </ol>
+            </div>
+        </header>
+    </section>
+
+    <!-- ========================  Blog article ======================== -->
+
+    <section class="blog">
+
+    <!-- ========================  Blog post ======================== -->
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+
+                <div class="blog-post">
+
+                    <!-- === blog main image & entry info === -->
+
+                    <div class="blog-image-main">
+                        <img src="@Model.BlogPost.FeaturedImageUrl" alt="" />
+                    </div>
+
+                    <div class="blog-post-content">
+
+                        <!-- === blog post title === -->
+
+                        <div class="blog-post-title">
+                            <h1 class="blog-title">@Model.BlogPost.Heading
+                            </h1>
+
+                            <div class="blog-info blog-info-top">
+                                <div class="entry">
+                                    <i class="fa fa-user"></i>
+                                    <span>@Model.BlogPost.Author</span>
+                                </div>
+                                <div class="entry">
+                                    <i class="fa fa-calendar"></i>
+                                    <span>@Model.BlogPost.PublishedDate.ToString("MMM")</span>
+                                    <strong>@Model.BlogPost.PublishedDate.Day</strong>
+                                    <span>@Model.BlogPost.PublishedDate.Year</span>
+                                </div>
+                                <div class="entry">
+                                    <i class="fa fa-comments"></i>
+                                    @if (Model is {Comments: not null })
+                                    {
+                                        <span>@Model.Comments.Count comments</span>
+                                    }
+
+                                </div>
+                               
+                            </div>
+                        </div>
+
+                        <!-- === blog post text === -->
+
+                        <div class="blog-post-text">
+                            <p>
+                                @Model.BlogPost.Content
+                            </p>
+                        </div>
+
+                        <!-- === blog info === -->
+
+                        <div class="blog-info blog-info-bottom">
+                            <ul>
+                                <li class="divider"></li>
+                                <li>
+                                    @if (Model.BlogPost.Tags != null)
+                                    {
+                                        foreach (var tag in Model.BlogPost.Tags)
+                                        {
+                                            <a href="/tags/@tag.Name" class="tag-link"><i class="fa fa-tag"></i> @tag.Name</a>
+                                        }
+                                    }
+                                </li>
+                             
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="comments">
+
+                        <!-- === comment header === -->
+
+                        <div class="comment-header">
+                            <a href="#" title="facebook"><i class="fa fa-facebook"></i></a>
+                            <a href="#" title="twitter"><i class="fa fa-twitter"></i></a>
+                            <a href="#" title="google"><i class="fa fa-google-plus"></i></a>
+                            <a href="#" title="pinterest"><i class="fa fa-pinterest"></i></a>
+                            <a href="#" title="linkedin"><i class="fa fa-linkedin"></i></a>
+                        </div>
+
+                        @if (Model.Comments != null)
+                        {
+                            foreach (var comment in Model.Comments)
+                            {
+                                <div class="comment-wrapper">
+                                        
+                                    <!-- === comment === -->
+                                        
+                                    <div class="comment-block">
+                                        <div class="comment-user">
+                                            <div>
+                                                <img src="/img/user-2.jpg" alt="Alternate Text" width="70" /></div>
+                                            <div>
+                                                <h5>@comment.Username
+                                                    <small>@comment.DateAdded.ToShortDateString()</small>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- comment description -->
+                                        
+                                        <div class="comment-desc">
+                                            <p>
+                                                @comment.Description
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="text-right mt-2 ">
+                                        
+                                            @if (User.Identity is {IsAuthenticated: true } && User.Identity.Name == comment.Username)
+                                            {
+                                                <form asp-controller="Blog" asp-action="DeleteComment" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?')">
+                                                    <input type="hidden" name="urlHandle" value="@Model.BlogPost.UrlHandle" />
+                                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                                    <button type="submit" class="btn btn-danger btn-xs">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </button>
+                                                </form>
+                                            }
+                                  
+                                        </div>
+
+                                    </div>
+                                        
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No comments.</p>
+                        }
+
+                        <!--/comment-wrapper-->
+                        <div class="comment-add">
+
+                            <div class="comment-reply-message">
+                                <div class="h3 title">Leave a Reply </div>
+                            </div>
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                
+                                <form method="post" asp-action="AddComment" asp-route-urlHandle="@Model.BlogPost.UrlHandle" asp-route-blogPostId="@Model.BlogPostId">
+                                    @Html.AntiForgeryToken()
+                                    
+                                    <div class="form-group">
+                                        <textarea rows="10" class="form-control" asp-for="CommentDescription" placeholder="Your comment" required="required"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="g-recaptcha" data-sitekey="@Configuration["reCAPTCHA:SiteKey"]"></div>
+                                        <span class="field-validation-error recaptcha-error" style="display: none;">Please tick I'm not a robot</span>
+                                    </div>
+                                    
+                                    <div class="clearfix text-center">
+                                        <input type="submit" class="btn btn-main" value="Add comment" />
+                                    </div>
+                                    
+                                </form>
+
+                            }
+                            else
+                            {
+                                <div class="comment-reply-message">
+                                    <div class="h3 title">You should Login or Register before able to write a comment.</div>
+                                </div>
+                                <p>
+                                    <a asp-action="Login" asp-controller="Account"></a> or <a asp-action="Register" asp-controller="Account"></a>
+                                </p>
+                            }
+                            
+                            @if (ViewData["SuccessMessage"] != null || ViewData["ErrorMessage"] != null)
+                            {
+                                <div class="mt-4">
+                                    @if (ViewData["SuccessMessage"] != null)
+                                    {
+                                        <div class="alert alert-primary" role="alert">@ViewData["SuccessMessage"]</div>
+                                    }
+                                    @if (ViewData["ErrorMessage"] != null)
+                                    {
+                                        <div class="alert alert-danger" role="alert">@ViewData["ErrorMessage"]</div>
+                                    }
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+ 
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+}
+else
+{
+    <div class="container mt-3">
+        <h2>Blog post not found!</h2>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://www.google.com/recaptcha/api.js?hl=en" async defer></script>
+    <script>
+       $("#comment-form").on("submit", function (e) {
+           if (grecaptcha.getResponse() === "") {
+               e.preventDefault();
+               $(".recaptcha-error").show();
+           }
+       });
+   
+       $(document).ready(function () {
+           const textArea = $("textarea");
+           $(function () {
+               $('[data-toggle="tooltip"]').tooltip();
+           });
+   
+           $(".reply_btn").click(function () {
+               $("#parentCommentId").val($(this).next().val());
+               document.getElementById("commentTitle").innerText = "Submit a reply";
+               let coordinateTop = textArea.offset().top - 145;
+               textArea.addClass("border border-danger rounded shadow-lg");
+               textArea.attr("placeholder", "Enter your reply...");
+               $("html, body").animate({
+                   scrollTop: coordinateTop
+               }, 1000);
+           });
+       });
+   </script>
+}

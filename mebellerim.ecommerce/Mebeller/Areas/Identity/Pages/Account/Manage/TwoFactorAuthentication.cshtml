@@ -1,0 +1,272 @@
+﻿@page
+@using Mebeller.Areas.Identity.Pages.Account.Manage
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Identity.Pages.Account.Manage.TwoFactorAuthenticationModel
+
+@{
+    ViewData["Title"] = "Two-factor authentication (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage"/>
+
+<body class="user-acount">
+<section class="content-main">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <aside class="col-lg-3 border-end">
+                    <nav class="nav nav-pills flex-lg-column mb-4">
+                        <a class="nav-link" href="/My-Account">Dashboard</a>
+                        <a class="nav-link" id="profile" asp-page="./Index">Profile</a>
+                        <a class="nav-link active" aria-current="page" id="two-factor" asp-page="./TwoFactorAuthentication">2factor</a>
+                        <a class="nav-link" id="personal-data" asp-page="./PersonalData">Delete account</a>
+                        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
+                    </nav>
+                </aside>
+                <div class="col-lg-9">
+                    <section class="content-body p-xl-4">
+                        @{
+                            var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
+                            @if (consentFeature?.CanTrack ?? true)
+                            {
+                                @if (Model.Is2faEnabled)
+                                {
+                                    if (Model.RecoveryCodesLeft == 0)
+                                    {
+                                        <div class="alert alert-danger">
+                                            <strong>You have no recovery codes left.</strong>
+                                            <p>You must <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+                                        </div>
+                                    }
+                                    else if (Model.RecoveryCodesLeft == 1)
+                                    {
+                                        <div class="alert alert-danger">
+                                            <strong>You have 1 recovery code left.</strong>
+                                            <p>You can <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+                                        </div>
+                                    }
+                                    else if (Model.RecoveryCodesLeft <= 3)
+                                    {
+                                        <div class="alert alert-warning">
+                                            <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
+                                            <p>You should <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+                                        </div>
+                                    }
+
+                                    if (Model.IsMachineRemembered)
+                                    {
+                                        <form method="post" style="display: inline-block">
+                                            <button type="submit" class="btn btn-primary">Forget this browser</button>
+                                        </form>
+                                    }
+                                    <a asp-page="./Disable2fa" class="btn btn-primary">Disable 2FA</a>
+                                    <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary">Reset recovery codes</a>
+                                }
+
+                                <h4>Authenticator app</h4>
+                                @if (!Model.HasAuthenticator)
+                                {
+                                    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">Add authenticator app</a>
+                                }
+                                else
+                                {
+                                    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">Set up authenticator app</a>
+                                    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-primary">Reset authenticator app</a>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger">
+                                    <strong>Privacy and cookie policy have not been accepted.</strong>
+                                    <p>You must accept the policy before you can enable two factor authentication.</p>
+                                </div>
+                            }
+                        }
+                    </section>
+                    <!-- content-body .// -->
+                </div>
+                <!-- col.// -->
+            </div>
+            <!-- row.// -->
+        </div>
+        <!-- card-body .//end -->
+    </div>
+    <!-- card .//end -->
+</section>
+<!-- footer -->
+<footer class="footer-one">
+    <div class="inner-footer">
+        <div class="container">
+            <div class="footer-top col-lg-12 col-xs-12">
+                <div class="row">
+                    <div class="tiva-html col-lg-4 col-md-12 col-xs-12">
+                        <div class="block">
+                            <div class="block-content">
+                                <p class="logo-footer">
+                                    <img src="/img/home/logo.png" alt="img">
+                                </p>
+                                <p class="content-logo">
+                                    Mebellerim
+                                </p>
+                            </div>
+                        </div>
+                        <div class="block">
+                            <div class="block-content">
+                                <ul>
+                                    <li>
+                                        <a href="#" aria-label="About">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" aria-label="reasons">Reasons to shop</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" aria-label="Customers">What our customers say</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" aria-label="team">Meet the team</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" aria-label="contact">Contact our buyers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="block">
+                            <div class="block-content">
+                                <p class="img-payment ">
+                                    <img class="img-fluid" src="/img/home/payment-footer.png" alt="img">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tiva-html col-lg-4 col-md-6">
+                        <div class="block m-top">
+                            <div class="title-block">
+                                Contact Us
+                            </div>
+                            <div class="block-content">
+                                <div class="contact-us">
+                                    <div class="title-content">
+                                        <i class="fa fa-home" aria-hidden="true"></i>
+                                        <span>Address :</span>
+                                    </div>
+                                    <div class="content-contact address-contact">
+                                        <p>123 Suspendis matti, Visaosang Building VST District NY Accums, North American</p>
+                                    </div>
+                                </div>
+                                <div class="contact-us">
+                                    <div class="title-content">
+                                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                                        <span>Email :</span>
+                                    </div>
+                                    <div class="content-contact mail-contact">
+                                        <p>support@turn.az</p>
+                                    </div>
+                                </div>
+                                <div class="contact-us">
+                                    <div class="title-content">
+                                        <i class="fa fa-phone" aria-hidden="true"></i>
+                                        <span>Hotline :</span>
+                                    </div>
+                                    <div class="content-contact phone-contact">
+                                        <p>+0012-345-67890</p>
+                                    </div>
+                                </div>
+                                <div class="contact-us">
+                                    <div class="title-content">
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                        <span>Opening Hours :</span>
+                                    </div>
+                                    <div class="content-contact hours-contact">
+                                        <p>Monday - Sunday / 08.00AM - 19.00</p>
+                                        <span>(Except Holidays)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tiva-modules col-lg-4 col-md-6">
+                        <div class="block m-top">
+                            <div class="block-content">
+                                <div class="title-block">Newsletter</div>
+                                <div class="sub-title">
+                                    Sign up to our newsletter to get the latest articles, lookbooks voucher codes direct
+                                    to your inbox
+                                </div>
+                                <div class="block-newsletter">
+                                    <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-url="@Url.Action("AddNewsletter", "Media")"
+                                          data-ajax-complete="completed">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="email" value="" placeholder="Enter Your Email">
+                                            <span class="input-group-btn">
+                                                <button class="effect-btn btn btn-secondary " name="submitNewsletter" type="submit">
+                                                    <span>subscribe</span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <input type="hidden" name="action" value="0">
+                                    </form>
+                                    <div class="success-message text-success mt-3" style="display: none"></div>
+                                    <div class="error-message text-danger mt-3" style="display: none"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="block m-top1">
+                            <div class="block-content">
+                                <div class="social-content">
+                                    <div class="title-block">
+                                        Follow us on
+                                    </div>
+                                    <div id="social-block">
+                                        <div class="social">
+                                            <ul class="list-inline mb-0 justify-content-end">
+                                                <li class="list-inline-item mb-0">
+                                                    <a href="#" aria-label="facebook" target="_blank">
+                                                        <i class="fa fa-facebook"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item mb-0">
+                                                    <a href="#" aria-label="twitter" target="_blank">
+                                                        <i class="fa fa-twitter"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item mb-0">
+                                                    <a href="#" aria-label="google" target="_blank">
+                                                        <i class="fa fa-google"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item mb-0">
+                                                    <a href="#" aria-label="instagram" target="_blank">
+                                                        <i class="fa fa-instagram"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="block m-top1">
+                            <div class="block-content">
+                                <div class="payment-content">
+                                    <div class="title-block">
+                                        Payment accept
+                                    </div>
+                                    <div class="payment-image">
+                                        <img class="img-fluid" src="/img/home/payment.png" alt="img">
+                                    </div>
+                                </div>
+                                <!-- Popup newsletter -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</footer>
+</body>

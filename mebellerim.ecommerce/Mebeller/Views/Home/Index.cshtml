@@ -1,0 +1,163 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+<style>
+  .subscribe {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+  }
+  
+  .subscribe__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .text-secondary {
+    color: #888;
+    margin-bottom: 20px;
+  }
+  
+  .subscribe-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .button-subscribe {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .success-message,
+  .error-message {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+</style>
+
+<div>
+    <!-- Header content -->
+    <partial name="Components/Home/_Slider"/>
+
+    <!-- Icons slider -->
+    <partial name="Components/Home/_IconsSlider"/>
+
+    <!-- Products -->
+    <partial name="Components/Home/_products"/>
+
+    <!-- Stretcher widget -->
+    <partial name="Components/Home/_Stretcher"/>
+
+    <!-- Blog Block -->
+    <partial name="Components/Home/_BlogBlock"/>
+    
+    <!-- ======================== Subscribe ==================== -->
+    
+   <section class="subscribe-position">
+     <div class="container">
+       <div class="subscribe text-center">
+         <h3 class="subscribe__title">Stay up-to-date wherever you are</h3>
+         <p class="text-secondary">Subscribe to our newsletter</p>
+         <div id="mc_embed_signup">
+           <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-url="@Url.Action("AddNewsletter","Media")" data-ajax-complete="completed" class="subscribe-form mt-5 pt-1">
+             <div class="form-group">
+               <input class="form-control mb-1" type="email" placeholder="Enter your email" name="customerEmail" required>
+             </div>
+             <button class="button button-subscribe mb-1" type="submit">Submit</button>
+           </form>
+           <div class="success-message text-success mt-3" style="display: none;"></div>
+           <div class="error-message text-danger mt-3" style="display: none;"></div>
+         </div>
+       </div>
+     </div>
+   </section>
+
+
+    <!-- Banner -->
+    <partial name="Components/Home/_Banner"/>
+
+    <!-- Blog -->
+    <partial name="Components/Home/_Blog"/>
+
+    <!-- Instagram -->
+    <partial name="Components/Home/_Instagram"/>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+    const subscribe = $(".subscribe-form input")
+    const error = $(".error-message")
+    const success =  $(".success-message")
+    
+        completed = function (xhr) {
+            if (xhr.responseText === "Successful") {
+               subscribe.val("");
+               error.hide();
+               success.text("Your email has been successfully registered");
+               success.show();
+            }
+            else if (xhr.responseText === "EmptyError") {
+                subscribe.val("");
+                success.hide();
+                error.text("Please enter your email");
+                error.show();
+            }
+            else if (xhr.responseText === "InvalidEmail") {
+                subscribe.val("");
+                success.hide();
+                error.text("The email is not valid");
+                error.show();
+            }
+            else if (xhr.responseText === "CustomerEmailExist") {
+                subscribe.val("");
+                success.hide();
+                error.text("Email already registered");
+                error.show();
+            }
+            else if (xhr.responseText === "MoreThan256Character") {
+               subscribe.val("");
+               success.hide();
+                error.text("Up to 256 characters are allowed");
+                error.show();
+            }
+            else if (xhr.responseText === "Failed") {
+                subscribe.val("");
+                success.hide();
+                error.text("A problem occurred while registering an email");
+                error.show();
+            }
+            $("input[name=__RequestVerificationToken]").remove();
+            $(".subscribe-form").append('@Html.AntiForgeryToken()');
+        };
+    </script>
+}

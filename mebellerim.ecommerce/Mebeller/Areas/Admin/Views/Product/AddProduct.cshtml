@@ -1,0 +1,291 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.Product.AddEditProductViewModel
+
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .file-delete {
+        position: relative;
+        top: -40px;
+        right: 12px
+    }
+
+    .upload-btn {
+        border: 2px #17a2b8 dashed;
+        padding: 45px;
+        height: auto;
+        display: block;
+        cursor: pointer
+    }
+
+    /* Set the size of the preview box */
+    .preview-box {
+        width: 150px;
+        height: 150px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
+    
+    /* Adjust the size of the preview image */
+    .preview-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Product" asp-action="Index">Back</a>
+                    </div>
+                </ol>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Products</li>
+                    <li class="breadcrumb-item active">Add product</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="add-product">
+    <div class="row">
+        <div class="col-lg-9 col-md-11 col-sm-12 m-auto">
+            <form asp-action="AddProduct" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="control-label" for="ProductName">Product name</label>
+                    <input class="form-control" asp-for="ProductName">
+                    <span class="text-danger field-validation-valid"></span>
+                </div>
+               
+                <div class="form-group">
+                    <label class="control-label">Description</label>
+                    <textarea id="editor" asp-for="ProductDescription">
+                    </textarea>
+                    <span class="text-danger field-validation-valid"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label" for="ProductName">User name</label>
+                    <input class="form-control" asp-for="UserName">
+                    <span class="text-danger field-validation-valid"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label" for="ProductName">User email</label>
+                    <input class="form-control" asp-for="UserEmail">
+                    <span class="text-danger field-validation-valid"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label" for="ProductName">User phone</label>
+                    <input class="form-control" asp-for="UserPhoneNumber">
+                    <span class="text-danger field-validation-valid"></span>
+                </div>
+    
+                <div id="without-attributes-section">
+                    <div class="form-group">
+                        <label class="control-label" for="ProductPrice">Product price</label>
+                        <input class="form-control" asp-for="ProductPrice">
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="ProductQuantityInStock">Quantity</label>
+                        <input class="form-control" asp-for="ProductQuantityInStock">
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                </div>
+              
+    
+                <div class="form-group">
+                    <label>Categories</label>
+                    <select class="form-control" size="9" multiple aria-label="select example" asp-items="Model.ProductCategories" asp-for="ProductCategoriesId"></select>
+                </div>
+                <div class="form-group">
+                    <label>Select Images</label>
+                    <label for="attachment" class="w-100 text-center">
+                        <a class="upload-btn mb-2" role="button" aria-disabled="false"><i class="bi bi-cloud-arrow-up-fill text-info display-3"></i></a>
+                    </label>
+                    <input type="file" asp-for="ProductImagesFiles" accept=".png,.jpg,.jpeg" id="attachment" class="d-none" multiple />
+                    <p id="files-area">
+                        <span id="filesList">
+                            <span id="files-names"></span>
+                        </span>
+                    </p>
+                </div>
+    
+                <label>Specifications</label>
+                <div class="form-group border border-secondary p-2 border-dark product-informations">
+                    <button id="add-information-btn" type="button" class="btn btn-success">Add</button>
+                </div>
+    
+                <div class="form-group">
+                    <input type="submit" value="Add" class="btn btn-block btn-primary">
+                    <input type="hidden" name="productCategoriesKey" id="selectedItems" />
+                </div>
+                @if (ViewData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success mt-3" role="alert">@ViewData["SuccessMessage"]</div>
+                }
+                else
+                {
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                }
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+    <script src="~/libs/tags/tags.min.js"></script>
+    <script src="~/libs/ckeditor5/build/ckeditor.js"></script>
+
+    <script>
+      
+       @*Manage Current Product Images*@
+       
+       $(".delete-currentProductImage").on("click",
+           function () {
+               $(this).parent().prev().attr("checked", "checked");
+               $(this).parent().remove();
+           });
+       
+       @*Manage Images*@
+       
+       const dt = new DataTransfer(); 
+       
+       $("#attachment").on('change', function (e) {
+           for (let i = 0; i < this.files.length; i++) {
+               let fileBloc = $('<span/>', { class: 'file-block' }),
+                   fileName = $('<img/>', { class: 'productimages', src: URL.createObjectURL(this.files.item(i)), alt: this.files.item(i).name });
+       
+               // Set fixed size for the image
+               fileName.css({
+                   width: '150px',
+                   height: '150px',
+               });
+       
+               fileBloc.append('<span class="file-delete badge badge-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">\r\n  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>\r\n</svg></span>')
+                   .append(fileName);
+               $("#filesList > #files-names").append(fileBloc);
+           }
+           for (let file of this.files) {
+               dt.items.add(file);
+           }
+           this.files = dt.files;
+       
+           $('span.file-delete').click(function () {
+               let name = $(this).next('img.productimages').attr("alt");
+               $(this).parent().remove();
+               for (let i = 0; i < dt.items.length; i++) {
+                   if (name === dt.items[i].getAsFile().name) {
+                       dt.items.remove(i);
+                   }
+               }
+               document.getElementById('attachment').files = dt.files;
+           });
+       });
+
+
+        ClassicEditor.create(document.querySelector('#editor'),
+                {
+                    language: 'en',
+                    ckfinder: { uploadUrl: "/UploadEditorFile" },
+                    heading: {
+                        options: [
+                            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                            { model: 'heading1', view: 'h1', title: 'Header 1', class: 'ck-heading_heading1' },
+                            { model: 'heading2', view: 'h2', title: 'Header 2', class: 'ck-heading_heading2' },
+                            { model: 'heading3', view: 'h3', title: 'Header 3', class: 'ck-heading_heading3' }
+                        ]
+                    },
+                    toolbar: {
+                        items: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', 'horizontalLine', 'underline', 'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                            'alignment', 'indent', 'outdent', '|',
+                            'insertTable', 'htmlEmbed', 'codeBlock', '|',
+                            'imageInsert', 'mediaEmbed', '|',
+                            'removeFormat', 'redo', 'undo'
+                        ],
+                        shouldNotGroupWhenFull: true
+                    },
+                    image: {
+                        // Configure the available styles.
+                        styles: [
+                            'alignLeft', 'alignCenter', 'alignRight'
+                        ],
+
+                        // Configure the available image resize options.
+                        resizeOptions: [
+                            {
+                                name: 'resizeImage:original',
+                                label: 'Original',
+                                value: null
+                            },
+                            {
+                                name: 'resizeImage:50',
+                                label: '50%',
+                                value: '50'
+                            },
+                            {
+                                name: 'resizeImage:75',
+                                label: '75%',
+                                value: '75'
+                            }
+                        ],
+
+                        // You need to configure the image toolbar, too, so it shows the new style
+                        // buttons as well as the resize buttons.
+                        toolbar: [
+                            'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
+                            '|',
+                            'resizeImage',
+                            '|',
+                            'imageTextAlternative'
+                        ]
+                    }
+                })
+            .catch(error => {
+                console.error(error);
+            });
+
+          //Add Informations Button Scripts
+        
+                const content2 = "<div class='row mb-2'><div class='col' ><input type='text' name='InformationNames' class='form-control' placeholder='Name'></div><div class='col'><input type='text' name='InformationValues' class='form-control' placeholder='Amount'></div><div class='col'><button type='button' class='btn btn-danger remove-information-btn'><i class='fa fa-trash' aria-hidden='true'></i></button></div></div>";
+                $("#add-information-btn").click(function () {
+                    $(content2).insertBefore("#add-information-btn");
+                });
+                $(document).on("click",
+                    ".remove-information-btn",
+                    function () {
+                        $(this).parent().parent().remove();
+                    });
+        
+        //Js Guid Generator
+
+        function GuidGenerator() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+    </script>
+}

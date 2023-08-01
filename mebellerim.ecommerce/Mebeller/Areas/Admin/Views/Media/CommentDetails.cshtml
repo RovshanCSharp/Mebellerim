@@ -1,0 +1,178 @@
+﻿@using Mebeller.Data.Utilities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.Media.Comment
+
+@{
+    ViewData["Title"] = "Show Comment";
+    TempData["commentId"] = Model.CommentId;
+
+    var returnUrl = Url.Action("CommentDetails", new { commentId = Model.CommentId });
+    
+    <style>
+        .view-heading {
+            visibility: visible;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        
+        .messageReplyTime {
+            font-size: 12px
+        }
+        
+        </style>
+
+}
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Media" asp-action="Comments">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Media</li>
+                    <li class="breadcrumb-item active">Comment details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-11 col-sm-12">
+            <div class="card bg-light mb-3">
+                <div class="card-header h4 d-flex justify-content-between">
+                    <h4 class="d-inline view-heading">Comment description</h4>
+                    <span class="badge badge-warning messageReplyTime">@Model.SubmitTime.ToSolarWithTime()</span>
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <a class="btn btn-success ml-2" asp-controller="User" asp-action="Index" asp-route-userId="@Model.User.Id">User @Model.User.UserName</a>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu">
+                                @if (Model.IsConfirmed)
+                                {
+                                    <a class="dropdown-item" asp-action="RejectComment" asp-route-commentId="@Model.CommentId" asp-route-returnUrl="@returnUrl">Reject comments</a>
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item" asp-action="ConfirmComment" asp-route-commentId="@Model.CommentId" asp-route-returnUrl="@returnUrl">Accept comments</a>
+                                }
+                                <a class="dropdown-item" asp-action="DeleteComment" asp-route-commentId="@Model.CommentId">Delete Comment</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <fieldset class="mr-2">
+                        <label class="h6 view-heading">Description</label>
+                        <form asp-action="EditComment">
+                            <textarea class="form-control" rows="5" name="NewCommentDescription">@Model.CommentDescription</textarea>
+                            <button id="editDescription" type="button" class="btn btn-block btn-dark mt-3">Edit Comments</button>
+                            @if (ViewData["SuccessMessageForEditComment"] != null)
+                            {
+                                <div class="alert alert-success mt-4" role="alert">@ViewData["SuccessMessageForEditComment"]</div>
+                            }
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.ParentComment == null)
+        {
+            <div class="col-lg-6 col-md-11 col-sm-12">
+                <div class="card bg-light mb-3">
+                    <div class="card-header h4 view-heading">Send a reply</div>
+                    <div class="card-body">
+                        <fieldset class="mr-2">
+                            <label class="h6 view-heading">Description</label>
+                            <form asp-action="AddReplyToCommentByAdmin">
+                                <textarea class="form-control" rows="5" name="NewCommentReplyDescription" placeholder="..."></textarea>
+                                <button type="submit" class="btn btn-block btn-dark mt-3">Submit a reply</button>
+                                @if (ViewData["SuccessMessageForAddCommentReply"] != null)
+                                {
+                                    <div class="alert alert-success mt-4" role="alert">@ViewData["SuccessMessageForAddCommentReply"]</div>
+                                }
+                            </form>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Replies.Any())
+            {
+                <div class="col-12 mt-3 mb-3">
+                    <h1>Answers</h1>
+                </div>
+                @foreach (var commentReply in Model.Replies)
+                {
+                    <div class="col-lg-6 col-md-11 col-sm-12">
+                        <div class="card bg-light mb-3">
+                            <div class="card-header h4 d-flex justify-content-between">
+                                <h4 class="d-inline view-heading">Response</h4>
+                                <span class="badge badge-warning messageReplyTime">@commentReply.SubmitTime.ToSolarWithTime()</span>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <a class="btn btn-success ml-2" asp-controller="User" asp-action="UserDetails" asp-route-userId="@commentReply.User.Id">User @commentReply.User.UserName</a>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                        <div class="dropdown-menu">
+                                            @if (commentReply.IsConfirmed)
+                                            {
+                                                <a class="dropdown-item" asp-action="RejectComment" asp-route-commentId="@commentReply.CommentId" asp-route-returnUrl="@returnUrl">Reject comments</a>
+                                            }
+                                            else
+                                            {
+                                                <a class="dropdown-item" asp-action="ConfirmComment" asp-route-commentId="@commentReply.CommentId" asp-route-returnUrl="@returnUrl">Accept comments</a>
+                                            }
+                                            <a class="dropdown-item" asp-action="DeleteComment" asp-route-commentId="@commentReply.CommentId" asp-route-returnUrl="@returnUrl">Delete Comment</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <fieldset disabled="" class="mr-2 mb-3">
+                                    <label class="h6">Description</label>
+                                    <textarea class="form-control" rows="5" readonly>@commentReply.CommentDescription</textarea>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $(document).ready(function () {
+            let clickCount = 0;
+            $("#editDescription").click(function () {
+                if (clickCount === 0) {
+                    $(this).text("Edit");
+                    $(this).prev().prop("disabled", false).focus();
+                    ++clickCount;
+                } else {
+                    $(this).parent().submit();
+                }
+            });
+        });
+    </script>
+}

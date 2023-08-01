@@ -1,0 +1,344 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Mebeller.Models.Media
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Product.ProductsViewModel
+@inject IAccountService AccountService
+
+@{
+    ViewData["Title"] = "Products";
+
+    var isModelNotEmpty = !Convert.ToBoolean(ViewData["isEmpty"]);
+
+    var availableCategoriesTreeViews = Model.CategoriesTreeViews.Where(p => p.CategoryProductsCount is > 0 or 0);
+
+    var isUserSignIn = AccountService.IsUserSignedIn();
+
+    Layout = "Product/_Layout";
+    <link rel="stylesheet" href="/css/Products/style.css"/>
+
+}
+
+<section class="main-header" style="background-image: url(img/gallery-3.jpg)">
+    <header>
+        <div class="container">
+            <h1 class="h2 title">Shop</h1>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li>
+                    <a href="/">
+                        <span class="icon icon-home"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Categories">Product Category</a>
+                </li>
+
+            </ol>
+        </div>
+    </header>
+</section>
+
+<partial name="Components/Layout/_IconsSlider"/>
+
+<section class="products">
+<div class="container">
+<form asp-action="Index" method="get">
+    <div class="row">
+        <div class="col-md-3 col-xs-12">
+            <div class="filters">
+                <div class="filter-box active">
+                    <div class="title">Price</div>
+                    <div class="filter-content">
+                        <div id="slider" class="form-control"></div>
+                        <p class="text-center mt-3">
+                            From
+                            <span class="min-price text-danger">
+                            </span> to <span class="max-price text-danger"></span> USD
+                        </p>
+                        <button id="price-range-button" class="btn btn-block btn-success rounded-0">Apply Price Range</button>
+                    </div>
+                </div>
+                <div class="filter-box active">
+                    <div class="title">
+                        Categories
+                    </div>
+                    <div class="filter-content">
+                        @foreach (var categoryTreeView in availableCategoriesTreeViews)
+                        {
+                            <span class="checkbox">
+                                <input class="pixel-radio" type="checkbox" id="@categoryTreeView.CategoryName" name="SelectedCategories" value="@categoryTreeView.CategoryId" @(Model.SelectedCategories.Any(p => p == categoryTreeView.CategoryId) ? "checked" : "")>
+                                <label class="ml-2" for="@categoryTreeView.CategoryName">
+                                    @categoryTreeView.CategoryName<span> (@categoryTreeView.CategoryProductsCount)</span>
+                                </label>
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-xs-12">
+            <div class="sort-bar clearfix">
+                <div class="sort-results pull-left">
+                    <div class="input-group mb-4">
+                        <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="sofa" aria-label="...">
+                    </div>
+                    <p id="items-counter" class="text-muted">Items: @(Model.Products?.Count() ?? 0)</p>
+                </div>
+                <div class="sort-options pull-right">
+                    <span class="hidden-xs">Sort by</span>
+                    <select asp-items="Model.SortList" asp-for="SortBy"></select>
+                    <span class="grid-list">
+                        <a href="/Products">
+                            <i class="fa fa-th-large"></i>
+                        </a>
+                        <a href="/ProductList">
+                            <i class="fa fa-align-justify"></i>
+                        </a>
+                        <a href="#" class="toggle-filters-mobile">
+                            <i class="fa fa-search"></i>
+                        </a>
+                    </span>
+                </div>
+            </div>
+
+            @if (isModelNotEmpty && Model.Products != null)
+            {
+                <div class="row">
+                    @foreach (var product in Model.Products)
+                    {
+                        var quickViewId = $"quickview-{product.ProductId}";
+                        var productImagePath = product.Images.Any() ? $"/img/{product.Images.FirstOrDefault()?.ImagePath}" : Image.DefaultImagePath;
+                        var isProductInFavorites = isUserSignIn && await AccountService.IsProductInLoggedUserFavoriteProductsAsync(product.ProductId);
+                        var action = isProductInFavorites ? "RemoveProductFromUserFavoriteProducts" : "AddProductToUserFavoriteProducts";
+                        var iconClass = isProductInFavorites ? "glyphicon glyphicon-heart" : "glyphicon glyphicon-heart-empty";
+                        var favoriteActionTitle = isProductInFavorites ? "Remove from Favorites" : "Add to Favorites";
+                        var favoriteActionDataTitle = isProductInFavorites ? "Remove from Favorites" : "Add to Favorites";
+                        var simpleProductPriceLabel = product.ProductPrice != 0 && product.ProductQuantityInStock != 0 ? $"{product.ProductPrice:C} " : product.ProductPrice == 0 && product.ProductQuantityInStock > 0 ? "0.00" : "";
+
+                        <div class="col-md-6 col-xs-6">
+                            <article>
+                                <div class="info">
+                                    @if (isUserSignIn)
+                                    {
+                                        <span class="@favoriteActionTitle">
+                                            <a asp-controller="Product" class="@iconClass" asp-action="@action" asp-route-favoriteProductId="@product.ProductId" title="@favoriteActionTitle" data-title="@favoriteActionDataTitle"></a>
+                                        </span>
+                                    }
+                                    <span>
+                                        <a href="#@quickViewId" class="mfp-open" data-title="Quick view">
+                                            <i class="icon icon-eye"></i>
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="figure-grid">
+                                    <span class="label label-info">New</span>
+                                    <div class="image">
+                                        <a href="#@quickViewId" class="mfp-open">
+                                            <img src="@productImagePath" alt="" width="640"/>
+                                        </a>
+                                    </div>
+                                    <div class="text">
+                                        <h2 class="title h4">
+                                            <a asp-controller="Product" asp-action="ProductDetails" asp-route-productId="@product.ProductId">@product.ProductName</a>
+                                        </h2>
+                                        <sup>@simpleProductPriceLabel</sup>
+                                        <span class="description clearfix">@product.ProductDescription</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div id="@quickViewId" class="popup-main mfp-hide">
+                            <div class="product">
+                                <div class="popup-title">
+                                    <div class="h1 title">
+                                        @product.ProductName
+                                        @if (product.Categories.Any())
+                                        {
+                                            <small>@product.Categories.First().CategoryName</small>
+                                        }
+                                        else
+                                        {
+                                            <small>Category:</small>
+                                        }
+                                    </div>
+                                </div>
+                                @if (product.Images.Any())
+                                {
+                                    <div class="owl-product-gallery">
+                                        @foreach (var image in product.Images)
+                                        {
+                                            <img src="/img/@(image.ImagePath)" alt=""/>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="owl-product-gallery">
+                                        <img src="/img/product-1.png" alt="" width="640"/>
+                                        <img src="/img/product-2.png" alt="" width="640"/>
+                                        <img src="/img/product-3.png" alt="" width="640"/>
+                                        <img src="/img/product-4.png" alt="" width="640"/>
+                                    </div>
+                                }
+                                <div class="popup-content">
+                                    <div class="product-info-wrapper">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="info-box">
+                                                    <strong>Description</strong>
+                                                    <span>@product.ProductDescription</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="info-box">
+                                                    <span>
+                                                        <strong>Availability</strong>
+                                                    </span>
+                                                    <span>
+                                                        <i class="fa @(product.ProductQuantityInStock > 0 ? "fa-check-square-o" : "fa-truck")"></i>
+                                                        @(product.ProductQuantityInStock > 0 ? "In stock" : "Out of stock")
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="popup-table">
+                                    <div class="popup-cell">
+                                        <div class="price">
+                                            <span class="h3">@product.ProductPrice.ToString("C")</span>
+                                        </div>
+                                    </div>
+                                    <div class="popup-cell">
+                                        <div class="popup-buttons">
+                                            <a asp-controller="Product" asp-action="Index">
+                                                <span class="icon icon-eye"></span>
+                                                <span class="hidden-xs"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @await Html.PartialAsync("PartialPaging", "ProductList")
+            }
+            else
+            {
+                <div class="text-center">
+                    <h2>No products found</h2>
+                    <p>There are currently no products available to display.</p>
+                </div>
+            }
+            
+        </div>
+
+    </div>
+    <input id="minimum-price" type="hidden" name="minimumPrice" value="@ViewData["minimumPrice"]"/>
+    <input id="maximum-price" type="hidden" name="maximumPrice" value="@ViewData["maximumPrice"]"/>
+    <input id="page-number-input" type="hidden" name="pageNumber"/>
+</form>
+</div>
+</section>
+
+@section Scripts
+{
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        @{
+            var productsMaximumPrice = 0;
+
+            if (isModelNotEmpty)
+            {
+                var currentProducts =
+                    Model
+                        .Products;
+
+                productsMaximumPrice =
+                    currentProducts
+                        .Max(p => p.ProductPrice);
+            }
+        }
+               
+           $(document).ready(function() {
+               $(".page-link").click(function () {
+                   $("#page-number-input").val($(this).val());
+                   $("form").submit();
+               });
+   
+               $("#price-range-button").click(function () {
+                   $("form").submit();
+               });
+   
+               $("select").change(function() {
+                   $("form").submit();
+               });
+   
+               $("input[type=checkbox]").change(function() {
+                   $("form").submit();
+               });
+           });
+   
+           function minimumOrMaximumValuesChanged() {
+               $("form").submit();
+           }
+   
+           function collision($div1, $div2) {
+               const x1 = $div1.offset().left,
+                   w1 = 40,
+                   r1 = x1 + w1,
+                   x2 = $div2.offset().left,
+                   w2 = 40,
+                   r2 = x2 + w2;
+           
+               return !(r1 < x2 || x1 > r2);
+           }
+   
+           $('#slider').slider({
+               range: true,
+               min: 0,
+               max: @productsMaximumPrice,
+               values: [@ViewData["minimumPrice"], @(ViewData["maximumPrice"]?.ToString() == 0.ToString() ? productsMaximumPrice : ViewData["maximumPrice"])],
+               slide: function (event, ui) {
+                   $('.ui-slider-handle:eq(0) .price-range-min').html(ui.values[0] + ' USD');
+                   $('.ui-slider-handle:eq(1) .price-range-max').html(ui.values[1] + ' USD');
+                   $('.price-range-both').html('<i>' + ui.values[0] + ' USD - </i>' + ui.values[1] + ' USD');
+                   $(".min-price").text(ui.values[0]);
+                   $(".max-price").text(ui.values[1]);
+                   $("#minimum-price").val(ui.values[0]);
+                   $("#maximum-price").val(ui.values[1]);
+               }
+           });
+           
+       </script>
+    <script>
+        $(document).ready(function() {
+            // Get the initial number of items to display
+            @{
+                var initialItems = Model.Products?.Count() ?? 0;
+            }
+    
+            // Set the initial items counter
+            $('#items-counter').text("Items: " + @initialItems);
+    
+            // Handle change event of the select box
+            $('#result-per-page').change(function() {
+                const selectedValue = $(this).val();
+                let itemsToShow;
+    
+                if (selectedValue === 0) {
+                    // Show all items
+                    itemsToShow = initialItems;
+                } else {
+                    // Show the selected number of items
+                    itemsToShow = Math.min(initialItems, parseInt(selectedValue));
+                }
+    
+                // Update the items counter
+                $('#items-counter').text("Items: " + itemsToShow);
+            });
+        });
+    </script>
+}

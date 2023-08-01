@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model (string workflow, string theme)
+@{
+    string GetClass(string feature) => feature.Equals(Model.workflow) ? "active" : "";
+}
+<a class="btn btn-@Model.theme btn-block @GetClass("Dashboard")"
+   asp-page="Dashboard">
+    Dashboard
+</a>
+
+<a class="btn btn-@Model.theme btn-block @GetClass("Features")" asp-page="Features">
+    Store Features
+</a>
+
+<a class="btn btn-success btn-block @GetClass("List")" asp-page="View"
+   asp-route-id="">
+    List Users
+</a>
+
+<a class="btn btn-success btn-block @GetClass("Create")" asp-page="Create">
+    Create Account
+</a>
+
+<a class="btn btn-success btn-block @GetClass("Delete")" asp-page="Delete">
+    Delete Account
+</a>
+
+<a class="btn btn-success btn-block @GetClass("Edit")" asp-page="Edit"
+   asp-route-id="">
+    Edit Users
+</a>
+
+<a class="btn btn-success btn-block @GetClass("Lockouts")" asp-page="Lockouts">
+    Lockouts
+</a>
+
+<a class="btn btn-success btn-block @GetClass("Roles")"
+   asp-page="Roles" asp-route-id="">
+    Edit Roles
+</a>
+
+<a class="btn btn-success btn-block @GetClass("Claims")"
+   asp-page="Claims" asp-route-id="">
+    Claims
+</a>

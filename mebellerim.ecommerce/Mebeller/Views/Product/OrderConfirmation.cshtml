@@ -1,0 +1,233 @@
+﻿@model Mebeller.Models.ViewModels.Product.OrderViewModel
+
+@{
+    ViewData["Title"] = ViewData["HeaderTitle"];
+    Layout = "Cart/_Layout";
+}
+
+<link rel="stylesheet" href="~/css/Products/style.css">
+
+<!-- ========================  Main header ======================== -->
+
+<section class="main-header" style="background-image: url(img/gallery-2.jpg)">
+    <header>
+        <div class="container text-center">
+            <h2 class="h2 title">Order Invoice</h2>
+        </div>
+    </header>
+</section>
+
+<!-- ========================  Step wrapper ======================== -->
+
+<div class="step-wrapper">
+    <div class="container">
+        <div class="stepper">
+            <ul class="row">
+                <li class="col-md-3 active">
+                    <span data-text="Cart items"></span>
+                </li>
+                <li class="col-md-3 active">
+                    <span data-text="Delivery"></span>
+                </li>
+                <li class="col-md-3 active">
+                    <span data-text="Payment"></span>
+                </li>
+                <li class="col-md-3 active">
+                    <span data-text="Receipt"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<section class="checkout">
+    <div class="container">
+        <p class="text-center billing-alert">@ViewData["Message"]</p>
+        <div class="print-section">
+            <div class="row mb-5">
+                <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+                    <div class="confirmation-card">
+                        <h3 class="billing-title">Order Information</h3>
+                        <table class="order-table">
+                            <tbody>
+                            <tr>
+                                <td>Payment Date</td>
+                                <td>: @Model.PaymentTime</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>: @Model.OrderTotalPrice</td>
+                            </tr>
+                            <tr>
+                                <td>Payment Method</td>
+                                <td>: @Model.PaymentMethod</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+                    <div class="confirmation-card">
+                        <h3 class="billing-title">Additional Information</h3>
+                        <table class="order-table">
+                            <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td>: @(Model?.OwnerUser?.UserDetails?.FirstName ?? "N/A")</td>
+                            </tr>
+                            <tr>
+                                <td>Last Name</td>
+                                <td>: @(Model?.OwnerUser?.UserDetails?.LastName ?? "")</td>
+                            </tr>
+                            <tr>
+                                <td>Mobile Number</td>
+                                <td>: @(Model?.OwnerUser?.MobileNumber)</td>
+                            </tr>
+                            <tr>
+                                <td>Order Status</td>
+                                <td>: @(Model?.OrderStatus)</td>
+                            </tr>
+                            <tr>
+                                <td>Order Note</td>
+                                <td>: @(!string.IsNullOrWhiteSpace(Model?.OrderNote) ? Model.OrderNote : "-")</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-4 mb-4 mb-xl-0">
+                    <div class="confirmation-card">
+                        <h3 class="billing-title">Shipping Address</h3>
+                        <table class="order-table">
+                            <tbody>
+                            <tr>
+                                <td>Province</td>
+                                <td>: @(Model?.OwnerUser?.UserDetails?.UserProvince)</td>
+                            </tr>
+                            <tr>
+                                <td>City</td>
+                                <td>: @(Model?.OwnerUser?.UserDetails?.UserCity)</td>
+                            </tr>
+                            <tr>
+                                <td>zip code</td>
+                                <td>: @(Model?.OwnerUser?.UserDetails?.UserZipCode)</td>
+                            </tr>
+                            <tr>
+                                <td>Address</td>
+                                <td>: @(Model?.OwnerUser?.UserDetails?.UserAddress)</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="order_details_table">
+                <div class="d-flex justify-content-between">
+                    <h2>Order Details</h2>
+                    <i class="bi bi-printer h5"></i>
+                </div>
+                <div class="table table-responsive-lg table-responsive-sm">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total Price</th>
+                        </tr>
+                        </thead>
+                        @if (Model?.OrderInvoicesDetails != null)
+                        {
+                            <tbody>
+                            @foreach (var orderInvoiceDetails in Model.OrderInvoicesDetails)
+                            {
+                                <tr>
+                                    <td class="py-2">
+                                        <p>@orderInvoiceDetails.InvoiceDetailsProductName</p>
+                                    </td>
+                                    <td class="align-middle py-2">
+                                        <h5>x <span class="middle-number d-inline-block">@orderInvoiceDetails.InvoiceDetailsQuantity.ToString("D2")</span></h5>
+                                    </td>
+                                    <td class="align-middle py-2">
+                                        <p>@(orderInvoiceDetails.InvoiceDetailsTotalPrice != 0 ? $"{orderInvoiceDetails.InvoiceDetailsTotalPrice:C}" : "0.00")</p>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="pb-4"></td>
+                                <td class="pb-4"></td>
+                                <td class="pb-4"></td>
+                            </tr>
+                            @foreach (var discount in Model.Discounts)
+                            {
+                                <tr>
+                                    <td>Discount Code</td>
+                                    <td>@discount.DiscountCode</td>
+                                    <td>-@discount.Amount.ToString("C")</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="pt-5">
+                                    <h4>Shipping costs</h4>
+                                </td>
+                                <td class="pt-5">
+                                    <h5></h5>
+                                </td>
+                                <td class="pt-5">
+                                    <p>$0.00</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4>Total</h4>
+                                </td>
+                                <td>
+                                    <h5></h5>
+                                </td>
+                                <td>
+                                    <h4>@Model.OrderTotalPrice</h4>
+                                </td>
+                            </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(document).ready(function () {
+                const numbersElements = $(".middle-number");
+                for (let i = 0; i < numbersElements.length; i++) {
+                    $(numbersElements[i]).text($(numbersElements[i]).text());
+                }
+            });
+
+            $(".bi-printer").click(function () {
+                const MyWindow = window.open('', 'PRINT', 'height=400,width=600');
+
+                MyWindow.document.write('<html lang=""><head><title>' + "Mebellerim Store Invoice" + '</title>');
+                MyWindow.document.write('<link rel="stylesheet" href="/libs/bootstrap/bootstrap-rtl.min.css">');
+                MyWindow.document.write('<link rel="stylesheet" href="/libs/fontawesome/css/all.min.css">');
+                MyWindow.document.write('<link rel="stylesheet" href="/libs/themify-icons/themify-icons.css">');
+                MyWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">');
+                MyWindow.document.write('<link rel="stylesheet" href="/css/favorites.css">');
+                MyWindow.document.write('</head><body >');
+                MyWindow.document.write('<h1>' + "Mebellerim Store Invoice" + '</h1>');
+                MyWindow.document.write($(".print-section").html());
+                MyWindow.document.write('</body></html>');
+
+                MyWindow.document.close(); // necessary for IE >= 10
+                MyWindow.focus(); // necessary for IE >= 10*/
+
+                MyWindow.print();
+                MyWindow.close();
+            });
+        });
+    </script>
+}

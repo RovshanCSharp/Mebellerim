@@ -1,0 +1,188 @@
+﻿@page "/manage/index"
+@using Mebeller.Areas.Identity.Pages.Account.Manage
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.User.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<body class="user-acount">
+<section class="content-main">
+    <div class="card">
+        <div class="card-body">
+            <div class="row gx-5">
+                <aside class="col-lg-3 border-end">
+                    <nav class="nav nav-pills flex-lg-column mb-4">
+                        <nav class="nav nav-pills flex-lg-column mb-4">
+                            <a class="nav-link" href="/My-Account">Dashboard</a>
+                            <a class="nav-link active" aria-current="page" id="profile" asp-page="./Index">Profile</a>
+                            <a class="nav-link" id="two-factor" asp-page="./TwoFactorAuthentication">2factor</a>
+                            <a class="nav-link" id="personal-data" asp-page="./PersonalData">Delete account</a>
+                            <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
+                        </nav>
+                    </nav>
+                </aside>
+                <div class="col-lg-9">
+                    <section class="content-body p-xl-4">
+                        <form id="profile-form" class="row contact_form" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="row gx-3">
+                                        <div class="col-6 mb-3">
+                                            <label class="control-label">Name</label>
+                                            <input class="form-control" id="first" placeholder="Enter your name" asp-for="FirstName">
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+                                        <div class="col-6 mb-3">
+                                            <label class="control-label">Surname</label>
+                                            <input class="form-control" id="last" placeholder="Enter your last name" asp-for="LastName">
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="control-label">Email <span class="current-password-label">(Email cannot be changed)</span></label>
+                                            <input class="form-control" placeholder="Enter your email" asp-for="Email" readonly>
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="control-label">Username</label>
+                                            <input class="form-control" placeholder="Enter your username" asp-for="UserName">
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="control-label">Phone</label>
+                                            <input class="form-control" id="company" placeholder="Enter your mobile number" asp-for="MobileNumber">
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+                                        <div class="col-lg-12 mb-3">
+                                            <label class="control-label">Province</label>
+                                            <input type="hidden" id="province" asp-for="UserProvince">
+                                            <select id="provinces" class="form-control" onchange="AddCitiesByProvince(this.value)">
+                                                <option value="">Choose</option>
+                                                <option value="Yasamal, Sebail"> Azerbaijan</option >
+                                            </select>
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="control-label">City</label>
+                                            <input type="hidden" id="city" asp-for="UserCity">
+                                            <select id="cities" class="form-control">
+                                                <option>Select province</option>
+                                            </select>
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+
+                                        <div class="col-lg-12 mb-3">
+                                            <label class="control-label">Address</label>
+                                            <textarea class="form-control" rows="5" placeholder="Enter your address" asp-for="UserAddress"></textarea>
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="control-label">Postcode</label>
+                                            <input type="number" class="form-control" id="zip" placeholder="Enter your zip code" asp-for="UserZipCode">
+                                            <span class="text-danger field-validation-valid"></span>
+                                        </div>
+                                        <!-- col .// -->
+                                    </div>
+                                    <!-- row.// -->
+                                </div>
+                                <!-- col.// -->
+                                <aside class="col-lg-4">
+                                    <figure class="text-lg-center">
+                                        @if (Model.Picture != null)
+                                        {
+                                            <img id="imgPicture" width="100" height="100" src="data:image/*;base64,@(Convert.ToBase64String(Model.Picture))" alt="User Photo">
+                                        }
+                                        else
+                                        {
+                                            <img id="imgPicture" src="" alt="">
+                                        }
+                                        <figcaption>
+                                            <input type="file"
+                                                   accept=".png,.jpg,.jpeg,.gif,.tif"
+                                                   asp-for="Picture"
+                                                   class="form-control"
+                                                   style="border:0!important;padding: 10px 0 30px;" width="100" height="100"
+                                                   onchange="document.getElementById('imgPicture').src = window.URL.createObjectURL(this.files[0])">
+                                        </figcaption>
+                                        <span asp-validation-for="Picture" class="text-danger"></span>
+                                    </figure>
+                                </aside>
+                                <!-- col.// -->
+                            </div>
+                            <!-- row.// -->
+                            <br/>
+                            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+                        </form>
+                    </section>
+                </div>
+                <!-- col.// -->
+            </div>
+            <!-- row.// -->
+        </div>
+        <!-- card body end// -->
+    </div>
+    <!-- card end// -->
+</section>
+</body>
+
+<script>
+    
+    //Provinces And Cities
+    
+    //Load provinces and cities
+    
+    $(document).ready(function () {
+    $('#provinces option').filter(function () {
+    return $(this).html() === $("#province").val();
+    }).attr('selected', true);
+    const _cities = document.getElementById("cities");
+    const citiesList = $("#provinces option:selected").val().split(",");
+    for (let i = 0; i < citiesList.length; i++) {
+    if (citiesList[i] !== "") {
+    _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+    }
+        }
+    $('#cities option').filter(function () {
+    return $(this).html() === $("#city").val();
+    }).attr('selected', true);
+    });
+    
+    //////
+    
+    function AddCitiesByProvince(provincesvalue) {
+    const _cities = document.getElementById("cities");
+    _cities.options.length = 0;
+    if (provincesvalue !== "") {
+    $("#province").val($("#provinces option:selected").text());
+    const citiesList = provincesvalue.split(",");
+    for (let i = 0; i < citiesList.length; i++) {
+    if (citiesList[i] !== "") {
+    _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+    }
+        }
+        } else {
+    $("#province").val("");
+    }
+        }
+    
+    $(document).ready(function () {
+    $("#cities").change(function () {
+    if ($(this).val() !== "Please select your province") {
+    $(this).prev().val($(this).val());
+    }
+        });
+    });
+    
+    </script>

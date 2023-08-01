@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.Banners.AddNewsletterViewModel
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Media" asp-action="Newsletters">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Media</li>
+                    <li class="breadcrumb-item active">Add newsletters</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="mb-4">Add Newsletter</h2>
+            <form asp-action="AddNewsletter" method="post">
+                <div class="form-group">
+                    <label asp-for="CustomerEmail">Email address</label>
+                    <input asp-for="CustomerEmail" class="form-control"/>
+                    <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</div>

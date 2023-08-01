@@ -1,0 +1,134 @@
+﻿@using Mebeller.Data.Utilities
+@using Mebeller.Models.Media
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+@{
+    Layout = "Home/_Layout";
+}
+
+<style>
+
+    .table th {
+        font-weight: bold;
+    }
+
+    .title {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .empty-cart-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-top: 50px;
+    }
+
+    .empty-cart-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .empty-cart-message {
+        text-align: center;
+    }
+
+    </style>
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+    <header>
+        <div class="container text-center">
+            <h2 class="h2 title">Account</h2>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li>
+                    <a href="/">
+                        <span class="icon icon-home"></span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="#">Dashboard</a>
+                </li>
+            </ol>
+        </div>
+    </header>
+</section>
+<hr/>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-md-0 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white text-center">
+                    <h5 class="mb-0">Manage</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="@Url.Action("ManageAccount")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-cogs mr-2"></i>Overview
+                    </a>
+                    <a href="@Url.Action("EditAccount")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-user mr-2"></i>Edit Account
+                    </a>
+                    <a href="@Url.Action("FavoriteProducts")" class="list-group-item list-group-item-action active">
+                        <i class="fa fa-heart mr-2"></i>Wishlist
+                    </a>
+                    <a href="@Url.Action("AccountOrders")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-shopping-cart mr-2"></i>Orders
+                    </a>
+                    <hr/>
+                    <form asp-action="LogOut" class="mt-3">
+                        <button class="btn btn-danger btn-block" type="submit">
+                            <i class="fa fa-sign-out mr-2"></i>Sign Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            @if (Model.Products.NotNullOrEmpty())
+            {
+                <div class="products">
+                    <div class="row">
+                        @foreach (var product in Model.Products)
+                        {
+                            var productImagePath = product.Images.Any() ? $"/img/{product.Images.FirstOrDefault()?.ImagePath}" : Image.DefaultImagePath;
+                            var simpleProductPriceLabel = product.ProductPrice != 0 && product.ProductQuantityInStock != 0 ? $"{product.ProductPrice:C}" : (product.ProductPrice == 0 && product.ProductQuantityInStock > 0 ? "0.00" : "");
+        
+                            <div class="col-md-6 col-xs-6">
+                                <article class="product">
+                                    <div class="figure-grid">
+                                        <span class="label label-info">New</span>
+                                        <div class="image">
+                                            <a href="#" class="mfp-open">
+                                                <img src="@productImagePath" alt="" width="640" />
+                                            </a>
+                                        </div>
+                                        <div class="text">
+                                            <h2 class="title h4">
+                                                <a asp-controller="Product" asp-action="ProductDetails" asp-route-productId="@product.ProductId">@product.ProductName</a>
+                                            </h2>
+                                            <sup>@simpleProductPriceLabel</sup>
+                                            <span class="description clearfix">@product.ProductDescription</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-cart-wrapper">
+                    <div class="empty-cart-icon">
+                        <i class="fa fa-heart"></i>
+                    </div>
+                    <div class="empty-cart-message">
+                        <h5>Your wishlist is empty</h5>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<hr/>

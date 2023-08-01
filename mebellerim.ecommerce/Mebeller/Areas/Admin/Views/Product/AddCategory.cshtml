@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.Product.AddEditCategoryViewModel
+
+@{ 
+    ViewData["Title"] = "Add Categories";
+}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Product" asp-action="Index">Back</a>
+                    </div>
+                </ol>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Products</li>
+                    <li class="breadcrumb-item active">Edit Category</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form asp-action="AddCategory">
+                <div class="row">
+                    <div class="col-lg-6 mx-auto">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label" for="CategoryName">Category name</label>
+                                    <input class="form-control" type="text" id="CategoryName" name="CategoryName" asp-for="CategoryName" required>
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="CategoryDescription">Description</label>
+                                    <textarea class="form-control" id="CategoryDescription" name="CategoryDescription" asp-for="CategoryDescription"></textarea>
+                                    <span class="text-danger field-validation-valid"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="ParentCategoryId">Main category</label>
+                                    <select class="form-select" id="ParentCategoryId" name="ParentCategoryId" asp-items="Model.AllCategories" asp-for="ParentCategoryId"></select>
+                                </div>
+                                <hr class="mb-4 mt-0">
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary float-end">Add</button>
+                                </div>
+                                @if (ViewData["SuccessMessage"] != null)
+                                {
+                                    <div class="alert alert-success mt-3" role="alert">@ViewData["SuccessMessage"]</div>
+                                }
+                                else
+                                {
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

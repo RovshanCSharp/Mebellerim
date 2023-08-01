@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<Mebeller.Models.Product.Category>
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Product" asp-action="AddCategory">Add</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Products</li>
+                    <li class="breadcrumb-item active">Category list</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+<form asp-action="Categories" method="get">
+    <div class="input-group mb-4">
+        <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="..." aria-label="...">
+        <button type="submit" class="input-group-text" id="search-textbox">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+            </svg>
+        </button>
+    </div>
+</form>
+
+@if (!Convert.ToBoolean(ViewData["isEmpty"]))
+{
+    <div class="container-fluid">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Category Type</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var category in Model)
+                {
+                    <tr>
+                        <td>@category.CategoryName</td>
+                        <td>
+                            <span class="badge badge-pill @(category.ParentCategory == null ? "badge-primary" : "badge-secondary")">
+                                @(category.ParentCategory == null ? "Main Category" : "Sub category: " + category.ParentCategory.CategoryName)
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a asp-action="EditCategory" asp-route-categoryId="@category.CategoryId" type="button" data-original-title="" title="">
+                                    <span data-feather="edit" style="margin-right: 20px;"></span>
+                                </a>
+                                <a type="button" asp-action="DeleteCategory" asp-route-categoryId="@category.CategoryId" onclick="return confirm('Are you sure you want to delete this product?');" style="margin-left: 10px;">
+                                    <span data-feather="trash"></span>
+                                </a>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @await Html.PartialAsync("PartialPaging", "Categories")
+}
+else
+{
+    <div class="text-center">
+        <h2>No Categories found</h2>
+        <p>There are currently no categories available to display.</p>
+    </div>
+}

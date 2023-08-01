@@ -1,0 +1,54 @@
+﻿@page
+@using Mebeller.Areas.Identity.Pages.Account.Manage
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Identity.Pages.Account.Manage.Disable2faModel
+@{
+    ViewData["Title"] = "Disable two-factor authentication (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage"/>
+<h3>@ViewData["Title"]</h3>
+
+<section class="content-main">
+    <div class="card">
+        <div class="card-body">
+            <div class="row gx-5">
+                <aside class="col-lg-3 border-end">
+                    <nav class="nav nav-pills flex-lg-column mb-4">
+                        <a class="nav-link" href="/My-Account">Dashboard</a>
+                        <a class="nav-link" id="profile" asp-page="./Index">Profile</a>
+                        <a class="nav-link active" aria-current="page" id="two-factor" asp-page="./TwoFactorAuthentication">2factor</a>
+                        <a class="nav-link" id="personal-data" asp-page="./PersonalData">Delete account</a>
+                        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
+
+
+                    </nav>
+                </aside>
+                <div class="col-lg-9">
+                    <section class="content-body p-xl-4">
+                        <div class="alert alert-warning" role="alert">
+                            <p>
+                                <strong>This action only disables 2FA.</strong>
+                            </p>
+                            <p>
+                                Disabling 2FA does not change the keys used in authenticator apps. If you wish to change the key
+                                used in an authenticator app you should <a asp-page="./ResetAuthenticator">reset your authenticator keys.</a>
+                            </p>
+                        </div>
+                        <div>
+                            <form method="post">
+                                <button class="btn btn-danger" type="submit">Disable 2FA</button>
+                            </form>
+                        </div>
+                    </section>
+                    <!-- content-body .// -->
+                </div>
+                <!-- col.// -->
+            </div>
+            <!-- row.// -->
+        </div>
+        <!-- card-body .//end -->
+    </div>
+    <!-- card .//end -->
+</section>

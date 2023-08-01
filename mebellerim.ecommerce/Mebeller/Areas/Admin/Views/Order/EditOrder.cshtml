@@ -1,0 +1,189 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Mebeller.Data.Services.Interfaces
+@using Mebeller.Data.Utilities
+@using System.Globalization
+@using Mebeller.Models.Product
+@model Mebeller.Models.ViewModels.Product.OrderViewModel
+
+@inject IAccountService AccountService
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Order" asp-action="Index">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Order</li>
+                    <li class="breadcrumb-item active">Edit order</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 mx-auto">
+                    <div class="p-0 p-sm-4">
+                        <h4 class="text-center">Order Details: @Model.OrderName</h4>
+                        <div class="row">
+                            <div class="col p-3 p-sm-4 mx-1 mx-sm-4 mt-4 rounded-lg bg-info text-light edit-order-content-section">
+                                <h5 class="mb-3">Order Information</h5>
+                                <ul class="edit-order-menu">
+                                    <li>Order ID: @Model.OrderId</li>
+                                    <li>Order Date: @Model.CreateTime</li>
+                                    <li>Payment Date: @Model.PaymentTime</li>
+                                    <li>Payment Method: @Model.PaymentMethod</li>
+                                    <li>
+                                        Status:
+                                        <form id="edit-order-form" class="d-inline" asp-action="EditOrder">
+                                            <select id="order-status-select-input" class="form-control ml-2 w-75 d-inline mt-1" asp-for="OrderStatus">
+                                                <option value="@OrderStatus.Canceled.GetDescription()">@OrderStatus.Canceled.GetDescription()</option>
+                                                <option value="@OrderStatus.AwaitingPayment.GetDescription()">@OrderStatus.AwaitingPayment.GetDescription()</option>
+                                                <option value="@OrderStatus.Doing.GetDescription()">@OrderStatus.Doing.GetDescription()</option>
+                                                <option value="@OrderStatus.AwaitingReview.GetDescription()">@OrderStatus.AwaitingReview.GetDescription()</option>
+                                                <option value="@OrderStatus.Completed.GetDescription()">@OrderStatus.Completed.GetDescription()</option>
+                                                <option value="@OrderStatus.Returned.GetDescription()">@OrderStatus.Returned.GetDescription()</option>
+                                            </select>
+                                            <input type="hidden" asp-for="OrderId" />
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col p-3 p-sm-4 mx-1 mx-sm-4 mt-4 rounded-lg bg-info text-light edit-order-content-section">
+                                <h5 class="mb-3">Recipient Information</h5>
+                                <ul class="edit-order-menu">
+                                    @{
+                                        var loggedUserRole = await AccountService.GetLoggedUserRoleAsync();
+                                        var isLoggedUserRoleAdmin = loggedUserRole is "Admin";
+                                    }
+                                    @if (isLoggedUserRoleAdmin && Model.OwnerUser != null)
+                                    {
+                                        <a class="text-dark" asp-area="Admin" asp-controller="User" asp-action="Index" asp-route-userId="@Model.OwnerUser.Id">@Model.OwnerUser.UserName</a>
+                                    }
+                                    else
+                                    {
+                                        <li>User: @Model.OwnerUser?.UserName</li>
+                                    }
+                                    @if (Model.OwnerUser?.UserDetails != null)
+                                    {
+                                        <li>Name: @Model.OwnerUser.UserDetails.FirstName</li>
+                                        <li>Last Name: @Model.OwnerUser.UserDetails.LastName</li>
+                                        <li>Mobile Number: @Model.OwnerUser.MobileNumber</li>
+                                        <li>Email: @Model.OwnerUser.Email</li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col p-3 p-sm-4 mx-1 mx-sm-4 mt-4 rounded-lg bg-info text-light edit-order-content-section">
+                                <h5 class="mb-3">Shipping Address</h5>
+                                <ul class="edit-order-menu">
+                                    <li>Province: @Model.OwnerUser?.UserDetails?.UserProvince</li>
+                                    <li>City: @Model.OwnerUser?.UserDetails?.UserCity</li>
+                                    <li>Zip Code: @Model.OwnerUser?.UserDetails?.UserZipCode</li>
+                                    <li>Address: @Model.OwnerUser?.UserDetails?.UserAddress</li>
+                                    @if (!string.IsNullOrEmpty(Model.OrderNote))
+                                    {
+                                        <li>Note: @Model.OrderNote</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 mx-auto px-5">
+                    <table class="table table-responsive-lg table-responsive-sm text-center table-light edit-order-table">
+                        <thead>
+                            <tr>
+                                <th class="cart-item-cells pl-5 text-left">Product</th>
+                                <th class="cart-item-cells">Price</th>
+                                <th class="cart-item-cells">Number</th>
+                                <th class="cart-item-cells">Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.OrderInvoicesDetails != null)
+                            {
+                                @foreach (var orderInvoiceDetails in Model.OrderInvoicesDetails)
+                                {
+                                    var productPrice = orderInvoiceDetails.InvoiceDetailsTotalPrice != 0 ? (orderInvoiceDetails.InvoiceDetailsTotalPrice / orderInvoiceDetails.InvoiceDetailsQuantity).ToString(CultureInfo.InvariantCulture) : "Free";
+                                    <tr>
+                                        <td class="cart-item-cells align-middle pl-5 text-left py-2">
+                                            @orderInvoiceDetails.InvoiceDetailsProductName
+                                        </td>
+                                        <td class="cart-item-cells align-middle py-2">@productPrice</td>
+                                        <td class="cart-item-cells align-middle py-2">@orderInvoiceDetails.InvoiceDetailsQuantity</td>
+                                        <td class="cart-item-cells align-middle py-2">@(orderInvoiceDetails.InvoiceDetailsTotalPrice != 0 ? $"{orderInvoiceDetails.InvoiceDetailsTotalPrice:C} " : "Free")</td>
+                                    </tr>
+                                }
+                            }
+                            <tr>
+                                <td colspan="4" class="pb-4"></td>
+                            </tr>
+                            @if (Model.Discounts != null)
+                            {
+                                @foreach (var discount in Model.Discounts)
+                                {
+                                    <tr>
+                                        <td class="pl-5 text-left py-2">Discount Code</td>
+                                        <td>@discount.DiscountCode</td>
+                                        <td></td>
+                                        <td>-@discount.Amount.ToString("C")</td>
+                                    </tr>
+                                }
+                            }
+                            <tr>
+                                <td class="cart-item-cells align-middle pl-5 text-left pt-5">
+                                    <p>Shipping</p>
+                                </td>
+                                <td class="pt-5">
+                                    <p>Cost</p>
+                                </td>
+                                <td class="pt-5"></td>
+                                <td class="pt-5"></td>
+                            </tr>
+                            <tr class="edit-order-table-totalPrice-tr">
+                                <td class="cart-item-cells align-middle pl-5 text-left">
+                                    <p class="h5">Total</p>
+                                </td>
+                                <td class="align-middle">
+                                    <p class="h5">@Model.OrderTotalPrice</p>
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script>
+        $(document).ready(function () {
+            $("#order-status-select-input").change(function () {
+                $("#edit-order-form").submit();
+            });
+        });
+    </script>
+}

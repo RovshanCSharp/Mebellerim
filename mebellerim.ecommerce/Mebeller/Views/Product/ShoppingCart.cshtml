@@ -1,0 +1,290 @@
+@using Mebeller.Models.Media
+@using Mebeller.Models.Product
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.Product.Order
+
+<head>
+    <link rel="stylesheet" href="/css/Badge.css"/>
+    @{
+        Layout = "Cart/_Layout";
+    }
+    <title>Cart</title>
+    <style>
+        .cart-wrapper {
+            margin-bottom: 20px;
+        }
+    
+        .alert {
+            margin-bottom: 10px;
+        }
+    
+        .table-responsive {
+            margin-bottom: 15px;
+        }
+    
+        .table th {
+            font-weight: bold;
+        }
+    
+        .shopping-cart-images {
+            max-height: 60px;
+            max-width: 60px;
+        }
+    
+        .product-count {
+            width: 80px;
+        }
+    
+        .title {
+            font-size: 12px;
+            font-weight: bold;
+        }
+    
+        .empty-cart-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 50px;
+        }
+    
+        .empty-cart-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+    
+        .empty-cart-message {
+            text-align: center;
+        }
+    
+        .proceed-to-checkout-button {
+            font-size: 14px;
+            margin-left: 10px;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<!-- ========================  Main header ======================== -->
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+    <header>
+        <div class="container text-center">
+            <h2 class="h2 title">Checkout</h2>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li>
+                    <a href="/">
+                        <span class="icon icon-home"></span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="/Shopping-Cart">Cart items</a>
+                </li>
+                <li>
+                    <a href="/Cart-Checkout">Payment</a>
+                </li>
+                <li>
+                    <a href="/OrderConfirmation">Receipt</a>
+                </li>
+            </ol>
+        </div>
+    </header>
+</section>
+
+
+<!-- =======+=================  Checkout ======================== -->
+
+<div class="step-wrapper">
+    <div class="container">
+        <div class="stepper">
+            <ul class="row">
+                <li class="col-md-3 active">
+                    <span data-text="Cart items"></span>
+                </li>
+                <li class="col-md-3">
+                    <span data-text="Delivery"></span>
+                </li>
+                <li class="col-md-3">
+                    <span data-text="Payment"></span>
+                </li>
+                <li class="col-md-3">
+                    <span data-text="Receipt"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<section class="checkout">
+    <div class="container">
+
+        <header class="hidden">
+            <h3 class="h3 title">Cart</h3>
+        </header>
+
+        <!-- ========================  Cart wrapper ======================== -->
+
+        <div class="cart-wrapper">
+            @if (Model?.OrdersDetails?.Any() == true)
+            {
+                if (ViewData["Message"] != null)
+                {
+                    <div class="alert rounded-0 alert-info text-left" role="alert">@ViewData["Message"]</div>
+                }
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var orderDetails in Model.OrdersDetails)
+                        {
+                            var product = orderDetails.Product;
+                            var productPrice = product?.ProductPrice ?? 0;
+                            var productImagePath = product?.Images?.FirstOrDefault()?.ImagePath ?? Image.DefaultImagePath;
+                            var productUrl = Url.Action("ProductDetails", new { productId = product?.ProductId });
+                            var productQuantityInStock = orderDetails.Product.ProductQuantityInStock;
+                            var orderDetailsQuantity = orderDetails.OrderDetailsQuantity;
+                            var orderDetailsId = orderDetails.OrderDetailsId;
+
+                            <tr>
+                                <td>
+                                    <div class="media align-items-center">
+                                        <img class="shopping-cart-images thumbnail" src="@productImagePath" alt="Product Image">
+                                        <div class="ml-3">
+                                            <a class="text-dark font-weight-bold" href="@productUrl"></a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@product?.ProductName</td>
+                                <td>
+                                    <div class="media align-items-center">
+                                        <div class="h4 title">@(productPrice != 0 ? $"{productPrice:C}" : "Free")</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="media align-items-center">
+                                        <div class="input-group product-count" style="width: 130px">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default reduced items-count" type="button">
+                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                </button>
+                                            </span>
+                                            <input type="hidden" value="@productQuantityInStock"/>
+                                            <input readonly id="sst" value="@orderDetailsQuantity" class="form-control input-text qty order-details-quantities">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default increase items-count" type="button">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="media align-items-center">
+                                        <form asp-action="RemoveProductFormCart" method="post" class="d-inline-block">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="orderDetailsId" value="@orderDetailsId"/>
+                                            <button class="btn btn-sm btn-danger remove-order-details-button" type="submit">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </form>
+                                        <form id="update-cart-form" asp-action="UpdateCart" role="form" class="d-inline-block">
+                                            <button type="submit" class="btn btn-sm btn-primary update-cart-button">
+                                                <span class="glyphicon glyphicon-refresh"></span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-cart-wrapper">
+                    <div class="empty-cart-icon">
+                        <i class="fa fa-shopping-cart"></i>
+                    </div>
+                    <div class="empty-cart-message">
+                        <h5>Your cart is empty</h5>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @foreach (var discount in Model?.Discounts ?? Enumerable.Empty<Discount>())
+        {
+            <div class="clearfix">
+                <div class="cart-block cart-block-footer clearfix">
+                    <div>
+                        <strong>Discount amount</strong>
+                    </div>
+                    <div>
+                        <span class="badge badge-primary">@discount.Amount.ToString("C")</span>
+                    </div>
+                </div>
+
+                <div class="cart-block cart-block-footer clearfix">
+                    <div>
+                        <strong>Discount code</strong>
+                    </div>
+                    <div>
+                        <span class="badge badge-secondary">@discount.DiscountCode</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+       <div class="clearfix">
+           <div class="cart-block cart-block-footer cart-block-footer-price clearfix">
+               <div>
+                   <form asp-action="ApplyDiscountOnCart">
+                       <span class="checkbox">
+                           <input type="checkbox" id="couponCodeID">
+                           <label for="couponCodeID">Promo code</label>
+                           <input type="text" name="DiscountCode" class="form-control form-coupon" value="" placeholder="Enter your coupon code" />
+                       </span>
+                   </form>
+               </div>
+               @{
+                   var sum = Model?.Discounts?.Sum(discount => discount.Amount) ?? 0;
+                   var totalOrderPrice = (Model?.OrdersDetails?.Sum(p => p.OrderDetailsTotalPrice) ?? 0) - sum;
+               }
+               <div>
+                   Total price: <span class="badge badge-discount">@totalOrderPrice.ToString("C")</span>
+               </div>
+           </div>
+       </div>
+       <div class="clearfix">
+           <div class="row">
+               <div class="col-xs-6">
+                   <a asp-action="Index" class="btn btn-clean-dark"><span class="icon icon-chevron-left"></span> Shop more</a>
+               </div>
+               <div class="col-xs-6 text-right">
+                   <form id="proceed-to-checkout-form" asp-action="ProceedToCheckout">
+                       <button type="button" class="primary-btn ml-2 border-0 proceed-to-checkout-button">Proceed to checkout</button>
+                   </form>
+               </div>
+           </div>
+       </div>
+
+    </div>
+
+</section>
+
+
+@section Scripts
+{
+    <script src="/js/Qty.js"></script>
+}

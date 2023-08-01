@@ -1,0 +1,57 @@
+﻿@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+<!-- ========================  Main header ======================== -->
+
+<section class="main-header" style="background-image: url(img/gallery-2.jpg)">
+    <header class="hidden">
+        <div class="container">
+            <h1 class="h2 title">Category</h1>
+        </div>
+    </header>
+</section>
+
+<!-- ========================  Products ======================== -->
+
+<section class="products">
+    <div class="container">
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Product categories</h2>
+                    <div class="text">
+                        <p>Select category</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="row">
+            @if (Model != null)
+            {
+                foreach (var product in Model.Categories)
+                {
+                    <div class="col-md-4 col-xs-6">
+                        <article>
+                            <div class="figure-block">
+                                <div class="image">
+                                    <a href="#">
+                                        <img src="/img/product-1.png" alt="" width="360"/>
+                                    </a>
+                                </div>
+                                <div class="text">
+                                    <h2 class="title h4">
+                                        <a href="/Products?SelectedCategories=@product.CategoryId">@product.CategoryName</a>
+                                    </h2>
+                                    <sup>Category description</sup>
+                                    <span class="description clearfix">@product.CategoryDescription</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+     @await Html.PartialAsync("PartialPaging", "Categories");
+</section>
+

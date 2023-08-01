@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+<nav class="navbar-fixed">
+
+    <div class="container">
+
+        <!-- ==========  Top navigation ========== -->
+
+        <partial name="Components/Layout/_TopNavigation"/>
+
+        <!-- ==========  Main navigation ========== -->
+
+        <partial name="Components/Layout/_MainNavigation"/>
+
+        <!-- ==========  Search wrapper ========== -->
+        <div class="search-wrapper">
+            
+           <form asp-action="Index" asp-controller="Product" method="get">
+                   <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="..." aria-label="...">
+           </form>
+          
+
+        </div>
+
+        <!-- ==========  Login wrapper ========== -->
+
+        <partial name="Components/Layout/_LoginWrapper"/>
+
+        <!-- ==========  Cart wrapper ========== -->
+
+        <partial name="Components/Layout/_CartWrapper"/>
+    </div>
+</nav>

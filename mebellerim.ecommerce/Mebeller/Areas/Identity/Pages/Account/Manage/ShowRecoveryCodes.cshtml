@@ -1,0 +1,59 @@
+﻿@page
+@using Mebeller.Areas.Identity.Pages.Account.Manage
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Identity.Pages.Account.Manage.ShowRecoveryCodesModel
+@{
+    ViewData["Title"] = "Recovery codes";
+    ViewData["ActivePage"] = "TwoFactorAuthentication";
+}
+
+<partial name="_StatusMessage" for="StatusMessage"/>
+
+<body class="user-acount">
+<section class="content-main">
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row gx-5">
+                <aside class="col-lg-3 border-end">
+                    <nav class="nav nav-pills flex-lg-column mb-4">
+                        <a class="nav-link" href="/My-Account">Dashboard</a>
+                        <a class="nav-link" id="profile" asp-page="./Index">Profile</a>
+                        <a class="nav-link active" aria-current="page" id="two-factor" asp-page="./TwoFactorAuthentication">2factor</a>
+                        <a class="nav-link" id="personal-data" asp-page="./PersonalData">Delete account</a>
+                        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
+                    </nav>
+                </aside>
+                <div class="col-lg-9">
+                    <section class="content-body p-xl-4">
+                        <div class="alert alert-warning" role="alert">
+                            <p>
+                                <strong>Put these codes in a safe place.</strong>
+                            </p>
+                            <p>
+                                If you lose your device and don't have the recovery codes you will lose access to your account.
+                            </p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                @for (var row = 0; row < Model.RecoveryCodes.Length; row += 2)
+                                {
+                                    <code class="recovery-code">@Model.RecoveryCodes[row]</code>
+                                    <text>&nbsp;</text>
+                                    <code class="recovery-code">@Model.RecoveryCodes[row + 1]</code>
+                                    <br/>
+                                }
+                            </div>
+                        </div>
+                    </section>
+                    <!-- content-body .// -->
+                </div>
+                <!-- col.// -->
+            </div>
+            <!-- row.// -->
+        </div>
+        <!-- card-body .//end -->
+    </div>
+    <!-- card .//end -->
+</section>
+</body>

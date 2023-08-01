@@ -1,0 +1,183 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.User.EditUserViewModel
+
+@inject IAccountService AccountService
+
+@{
+    ViewData["Title"] = "User Editing";
+    var isUserHasPassword =
+        await AccountService.DoesUserHavePasswordByIdAsync(Model.UserId);
+}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="User" asp-action="Index">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Users</li>
+                    <li class="breadcrumb-item active">Edit user</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<div class="row">
+    <div class="col-lg-7 col-md-9 col-sm-12 m-auto">
+        <form asp-action="EditUser">
+            <div class="form-group">
+                <label class="control-label">Username</label>
+                <input class="form-control" asp-for="UserName">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Email</label>
+                <input class="form-control" asp-for="Email">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Mobile Number</label>
+                <input class="form-control" asp-for="MobileNumber">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                
+                <button class="form-control btn btn-danger" id="change-password" type="button">
+                    @if (isUserHasPassword)
+                    {
+                        <text>Change password</text>
+                    }
+                    else
+                    {
+                        <text>Add password</text>
+                    }
+                </button>
+                
+                <div class="d-none">
+                    <label class="control-label">Password</label>
+                    <input class="form-control" asp-for="UserPassword">
+                    <span class="text-danger field-validation-valid"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Role</label>
+                <select class="form-control" asp-items="Model.Roles" asp-for="UserRoleName">
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">First name</label>
+                <input class="form-control" asp-for="FirstName">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Last name</label>
+                <input class="form-control" asp-for="LastName">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Province</label>
+                <input type="hidden" id="province" asp-for="UserProvince">
+                <select id="provinces" class="form-control" onchange="AddCitiesByProvince(this.value)">
+                    <option value="">Select</option>
+                    <option value="Agdam ,Agdash ,Agjabadi ,Astara ,Baku ,Balakan ,Barda ,Beylagan ,Bilasuvar ,Dashkesan ,Fizuli ,Ganja ,Gobustan ,Goychay ,Goygol ,Hajigabul ,Imishli ,Ismailli ,Julfa ,Khachmaz ,Khirdalan ,Khojaly ,Kurdamir ,Lankaran ,Lerik ,Masally ,Mingachevir ,Naftalan ,Nakhchivan ,Neftchala ,Oghuz ,Qabala ,Qakh ,Qazakh ,Quba ,Qubadli ,Qusar ,Saatli ,Sabirabad ,Salyan ,Shabran ,Shaki ,Shamakhi ,Shirvan ,Shusha ,Sumqayit ,Tartar ,Tovuz ,Ujar ,Yardimli ,Yevlakh ,Zangilan ,Zaqatala ,Zardab">Azerbaijan</option>
+                </select>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">City</label>
+                <input type="hidden" id="city" asp-for="UserCity">
+                <select id="cities" class="form-control">
+                    <option>Please choose your province</option>
+                </select>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Address</label>
+                <textarea asp-for="UserAddress" rows="3" class="form-control none-resize">
+                </textarea>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Zip code</label>
+                <input class="form-control" type="number" asp-for="UserZipCode">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="edit" class="btn btn-block btn-primary">
+            </div>
+            <div class="alert alert-danger text-left mt-3" role="alert" asp-validation-summary="All"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            $('#change-password').click(function () {
+                $(this).next().removeClass('d-none');
+                $(this).addClass('d-none');
+            });
+        });
+
+        //Provinces And Cities
+
+        //Load Provinces And Cities
+
+        $(document).ready(function () {
+            $('#provinces option').filter(function () {
+                return $(this).html() === $("#province").val();
+            }).attr('selected', true);
+            const _cities = document.getElementById("cities");
+            const citiesList = $("#provinces option:selected").val().split(",");
+            for (i = 0; i < citiesList.length; i++) {
+                if (citiesList[i] !== "") {
+                    _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+                }
+            }
+            $('#cities option').filter(function () {
+                return $(this).html() === $("#city").val();
+            }).attr('selected', true);
+        });
+
+        //////
+
+        function AddCitiesByProvince(provincesvalue) {
+            var _cities = document.getElementById("cities");
+            _cities.options.length = 0;
+            if (provincesvalue !== "") {
+                $("#province").val($("#provinces option:selected").text());
+                const citiesList = provincesvalue.split(",");
+                for (i = 0; i < citiesList.length; i++) {
+                    if (citiesList[i] !== "") {
+                        _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+                    }
+                }
+            } else {
+                $("#province").val("");
+            }
+        }
+
+        $(document).ready(function () {
+            $("#cities").change(function () {
+                if ($(this).val() !== "Please choose your province") {
+                    $(this).prev().val($(this).val());
+                }
+            });
+        });
+    </script>
+}

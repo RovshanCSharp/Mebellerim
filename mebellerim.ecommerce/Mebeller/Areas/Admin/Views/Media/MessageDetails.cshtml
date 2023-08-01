@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.Messages.MessageDetailViewModel
+
+@{
+    ViewData["Title"] = "Message Details";
+}
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Media" asp-action="MessageDetails">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Messages</li>
+                    <li class="breadcrumb-item active">Message details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container-fluid Ends-->
+
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Message == null)
+{
+    <p>There are no messages for reply.</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">From: @Model.Message.MessageSenderName &lt;@Model.Message.MessageSenderEmail&gt;</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Subject: @Model.Message.MessageSubject</h6>
+            <p class="card-text">@Model.Message.MessageDescription</p>
+            <p class="card-text">
+                <small class="text-muted">Submitted on @Model.Message.SubmitTime.ToString("g")</small>
+            </p>
+        </div>
+    </div>
+
+    @if (Model.Message.IsReplied)
+    {
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Reply</h5>
+                <p class="card-text">@Model.Message.MessageReply.MessageReplyDescription</p>
+                <p class="card-text">
+                    <small class="text-muted">Replied on @Model.Message.MessageReply.MessageReplySubmitTime.ToString("g")</small>
+                </p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card mt-3">
+            <div class="card-body">
+                <form method="post" asp-action="ReplyToMessage">
+                    <input type="hidden" asp-for="Message.MessageId"/>
+                    <div class="form-group">
+                        <label for="MessageReplyDescription">Reply</label>
+                        <textarea class="form-control" id="MessageReplyDescription" asp-for="MessageReplyDescription" rows="5"></textarea>
+                        <span asp-validation-for="MessageReplyDescription" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Reply</button>
+                </form>
+            </div>
+        </div>
+    }
+}

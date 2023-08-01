@@ -1,0 +1,159 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.Model.Blog.EditBlogPostRequest
+
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    
+    </style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" href="/Admin/Blogs">Back</a>
+                    </div>
+                </ol>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Blogs</li>
+                    <li class="breadcrumb-item active">Edit Blog article</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_Notification"/>
+
+<div>
+    <div class="container">
+        <form method="post">
+            <div class="mb-3">
+                <label for="heading" class="form-label">Id</label>
+                <input type="text" class="form-control" id="id" asp-for="BlogPost.Id" readonly required>
+                <span class="text-danger" asp-validation-for="BlogPost.Id"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="heading" class="form-label">Heading</label>
+                <input type="text" class="form-control" id="heading" asp-for="BlogPost.Heading" required>
+                <span class="text-danger" asp-validation-for="BlogPost.Heading"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="pageTitle" class="form-label">Page Title</label>
+                <input type="text" class="form-control" id="pageTitle" asp-for="BlogPost.PageTitle" required>
+                <span class="text-danger" asp-validation-for="BlogPost.PageTitle"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea class="form-control" id="content" asp-for="BlogPost.Content" required></textarea>
+                <span class="text-danger" asp-validation-for="BlogPost.Content"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="shortDescription" class="form-label">Short Description</label>
+                <input type="text" class="form-control" id="shortDescription" asp-for="BlogPost.ShortDescription" required>
+                <span class="text-danger" asp-validation-for="BlogPost.ShortDescription"></span>
+            </div>
+
+            @if (Model.BlogPost?.FeaturedImageUrl != null)
+            {
+                <div class="mb-3">
+                    <label for="featuredImageUrl" class="form-label">Featured Image Url</label>
+                    <input type="text" class="form-control" id="featuredImageUrl" asp-for="BlogPost.FeaturedImageUrl" required>
+                    <span class="text-danger" asp-validation-for="BlogPost.FeaturedImageUrl"></span>
+                </div>
+            }
+
+            <div class="mb-3">
+                <label for="urlHandle" class="form-label">Url Handle</label>
+                <input type="text" class="form-control" id="urlHandle" asp-for="BlogPost.UrlHandle" required>
+                <span class="text-danger" asp-validation-for="BlogPost.UrlHandle"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="publishedDate" class="form-label">Published Date</label>
+                <input type="date" class="form-control" id="publishedDate" asp-for="BlogPost.PublishedDate" required>
+                <span class="text-danger" asp-validation-for="BlogPost.PublishedDate"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" class="form-control" id="author" asp-for="BlogPost.Author" required>
+                <span class="text-danger" asp-validation-for="BlogPost.Author"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tags (comma separated)</label>
+                <input type="text" id="tags" class="form-control" asp-for="Tags" required />
+                <span class="text-danger" asp-validation-for="Tags"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="isVisible" asp-for="BlogPost.Visible">
+                <label class="form-check-label" for="isVisible">
+                    Is Visible
+                </label>
+            </div>
+
+            <div class="mb-3 d-flex justify-content-between">
+                <button class="btn btn-primary" type="submit" asp-page-handler="Edit">Submit</button>
+
+                <button class="btn btn-danger" type="submit" asp-page-handler="Delete">Delete</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+    
+
+@section Scripts {
+    <script>
+            var editor = new FroalaEditor('#content', {
+                imageUploadURL: '/api/images'
+            });
+
+
+            const featuredImageUploadElement = document.getElementById('featuredImageUpload');
+            const featuredImageUrl = document.getElementById('featuredImageUrl');
+            const featuredImageDisplay = document.getElementById('featuredImageDisplay');
+
+
+            async function uploadFeaturedImage(e) {
+                console.log(e.target.files[0]);
+
+                let data = new FormData();
+                data.append('file', e.target.files[0]);
+
+                await fetch('/api/images', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': '*/*',
+                    },
+                    body: data
+                }).then(response => response.json())
+                    .then(result => {
+                        featuredImageUrl.value = result.link;
+                        featuredImageDisplay.style.display = 'block';
+                        featuredImageDisplay.src = result.link;
+                    });
+            }
+
+            featuredImageUploadElement.addEventListener('change', uploadFeaturedImage);
+        </script>
+}

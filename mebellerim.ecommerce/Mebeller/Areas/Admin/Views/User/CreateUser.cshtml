@@ -1,0 +1,202 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Areas.Admin.ViewModels.User.CreateUserViewModel
+
+@{ 
+    ViewData["Title"] = "Add User";
+}
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                   <div class="h2 mt-3">
+                       <a class="btn btn-warning float-left" asp-controller="User" asp-action="Index">Back</a>
+                   </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Users</li>
+                    <li class="breadcrumb-item active">Add user</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<div class="row">
+    <div class="col-lg-7 col-md-9 col-sm-12 m-auto">
+        <form asp-action="CreateUser">
+            <div class="form-group">
+                <label class="control-label">Username</label>
+                <input class="form-control" asp-for="UserName">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Email</label>
+                <input class="form-control" asp-for="Email">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Mobile Number</label>
+                <input class="form-control" asp-for="MobileNumber">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Password</label>
+                <input class="form-control" asp-for="UserPassword">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Roles</label>
+                <select class="form-control" asp-items="Model.Roles" asp-for="UserRoleName">
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">First name</label>
+                <input class="form-control" asp-for="FirstName">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Last name</label>
+                <input class="form-control" asp-for="LastName">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Province</label>
+                <input type="hidden" id="province" asp-for="UserProvince">
+                <select id="provinces" class="form-control" onchange="AddCitiesByProvince(this.value)">
+                    <option value="">Select</option>
+                    <option value="60" >Xırdalan</option>
+                    <option value="32" >Astara</option>
+                    <option value="33" >Ağdaş</option>
+                    <option value="34" >Ağstafa</option>
+                    <option value="35" >Beyləqan</option>
+                    <option value="36" >Biləsuvar</option>
+                    <option value="37" >Bərdə</option>
+                    <option value="38" >Cəlilabad</option>
+                    <option value="41" >Gəncə</option>
+                    <option value="1564" >Gədəbəy</option>
+                    <option value="39" >Göytəpə</option>
+                    <option value="40" >Göyçay</option>
+                    <option value="42" >Hacıqabul</option>
+                    <option value="43" >Lənkəran</option>
+                    <option value="44" >Masallı</option>
+                    <option value="45" >Mingəçevir</option>
+                    <option value="1561" >Naxçıvan</option>
+                    <option value="46" >Neftçala</option>
+                    <option value="47" >Oğuz</option>
+                    <option value="1562" >Kürdəmir</option>
+                    <option value="48" >Qax</option>
+                    <option value="49" >Quba</option>
+                    <option value="50" >Qusar</option>
+                    <option value="51" >Qəbələ</option>
+                    <option value="52" >Saatlı</option>
+                    <option value="53" >Sabirabad</option>
+                    <option value="54" >Salyan</option>
+                    <option value="55" >Siyəzən</option>
+                    <option value="56" >Sumqayıt</option>
+                    <option value="57" >Tovuz</option>
+                    <option value="58" >Xaçmaz</option>
+                    <option value="1803" >Ağdam</option>
+                    <option value="59" >Xudat</option>
+                    <option value="1804" >Ağsu</option>
+                    <option value="61" >Xızı</option>
+                    <option value="1805" >Balakən</option>
+                    <option value="62" >Yevlax</option>
+                    <option value="1806" >Culfa</option>
+                    <option value="63" >Zaqatala</option>
+                    <option value="1807" >Daşkəsən</option>
+                    <option value="64" >Zərdab</option>
+                    <option value="1808" >Füzuli</option>
+                    <option value="65" >İmişli</option>
+                    <option value="1809" >Goranboy</option>
+                    <option value="66" >İsmayıllı</option>
+                    <option value="1810" >Göygöl</option>
+                    <option value="67" >Şabran</option>
+                    <option value="1811" >Lerik</option>
+                    <option value="68" >Şamaxı</option>
+                    <option value="1812" >Nabran</option>
+                    <option value="69" >Şirvan</option>
+                    <option value="1813" >Qazax</option>
+                    <option value="70" >Şəki</option>
+                    <option value="1814" >Qobustan</option>
+                    <option value="71" >Şəmkir</option>
+                    <option value="1815" >Tərtər</option>
+                    <option value="1563" >Digər rayon</option>
+                    <option value="1816" >Ucar</option>
+                    <option value="1817" >Naftalan</option>
+                    <option value="1818" >Horadiz</option>
+                    <option value="1802" >Ağcabədi</option>              
+                </select>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">City</label>
+                <input type="hidden" asp-for="UserCity">
+                <select id="cities" class="form-control">
+                    <option>Please choose your province</option>
+                </select>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Address</label>
+                <textarea asp-for="UserAddress" rows="3" class="form-control none-resize">
+                </textarea>
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">zip code</label>
+                <input class="form-control" type="number" asp-for="UserZipCode">
+                <span class="text-danger field-validation-valid"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-block btn-primary">
+            </div>
+            @if (ViewData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3" role="alert">@ViewData["SuccessMessage"]</div>
+            }
+            <div class="alert alert-danger text-left mt-3" role="alert" asp-validation-summary="All"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        function AddCitiesByProvince(provincesvalue) {
+            const _cities = document.getElementById("cities");
+            _cities.options.length = 0;
+            if (provincesvalue !== "") {
+                $("#province").val($("#provinces option:selected").text());
+                const citiesList = provincesvalue.split(",");
+                for (let i = 0; i < citiesList.length; i++) {
+                    if (citiesList[i] !== "") {
+                        _cities.options[_cities.options.length] = new Option(citiesList[i].trim(), citiesList[i].trim());
+                    }
+                }
+            } else {
+                $("#province").val("");
+            }
+        }
+
+        $(document).ready(function () {
+            $("#cities").change(function () {
+                if ($(this).val() !== "Please select your state") {
+                    $(this).prev().val($(this).val());
+                }
+            });
+        });
+
+    </script>
+
+}

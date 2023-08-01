@@ -1,0 +1,170 @@
+﻿<section id="page-interiors" class="cards">
+
+    <!-- === cards header === -->
+
+    <header>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8 text-center">
+                <h2 class="title">Design of interiors</h2>
+                <div class="text">
+                    <p>Our services team produces interior design solutions</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @if (Model.BlogPosts == null)
+{
+    <div class="container">
+        <div class="row">
+
+            <!-- === item === -->
+            <div class="col-md-6">
+                <figure>
+                    <figcaption style="background-image:url(img/blog-2.jpg)">
+                        <img src="img/blog-2.jpg" alt=""/>
+                    </figcaption>
+                    <a href="#interiorId1" class="btn btn-clean mfp-open mfp-open-scrollto">Interior design</a>
+                </figure>
+            </div>
+
+            <!-- === item === -->
+            <div class="col-md-3">
+                <figure>
+                    <figcaption style="background-image:url(img/blog-2.jpg)">
+                        <img src="img/blog-2.jpg" alt=""/>
+                    </figcaption>
+                    <a href="#interiorId1" class="btn btn-clean mfp-open mfp-open-scrollto">3D Modeling</a>
+                </figure>
+            </div>
+
+            <!-- === item === -->
+            <div class="col-md-3">
+                <figure>
+                    <figcaption style="background-image:url(img/blog-2.jpg)">
+                        <img src="img/blog-3.jpg" alt=""/>
+                    </figcaption>
+                    <a href="#interiorId1" class="btn btn-clean mfp-open mfp-open-scrollto">Architect services</a>
+                </figure>
+            </div>
+
+            <!-- === item === -->
+            <div class="col-md-3">
+                <figure>
+                    <figcaption style="background-image:url(img/blog-2.jpg)">
+                        <img src="img/blog-2.jpg" alt=""/>
+                    </figcaption>
+                    <a href="#interiorId1" class="btn btn-clean mfp-open mfp-open-scrollto">Manufacturing</a>
+                </figure>
+            </div>
+
+            <!-- === item === -->
+            <div class="col-md-3">
+                <figure>
+                    <figcaption style="background-image:url(img/blog-2.jpg)">
+                        <img src="img/blog-2.jpg" alt=""/>
+                    </figcaption>
+                    <a href="#interiorId1" class="btn btn-clean mfp-open mfp-open-scrollto">Planning</a>
+                </figure>
+            </div>
+
+            <!-- ========================  Article info popup - quick view ======================== -->
+
+            <div class="popup-main popup-main-article mfp-hide" id="interiorId1">
+
+                <!-- === product popup === -->
+                <div class="product">
+
+                    <!-- === popup-title === -->
+                    <div class="popup-title">
+                        <div class="h1 title">Interiors <small>Article category</small></div>
+                    </div>
+                    <div class="popup-content">
+                        <h2>Sketch out your floor plan</h2>
+                        <p>
+                            First things first, find out what you like. What makes you, you? More often than not we find
+                            that people have been stuck in places where others have called the shots, you didn’t
+                            own the apartment/condo/house or your kids really dictated what you did and didn’t furnish
+                            your home with... cough, white couch, cough. Now it’s your time to shine. Take a walk,
+                            find out what colors speak to you. Pick up a few magazines and see if you really identify
+                            with a particular style. Head over to Pinterest and create a board filled with things
+                            you’d want in your new space.
+                        </p>
+                        <p><img src="assets/images/blog-3.jpg" alt="This is an alternative image description. It will generate auto caption."/></p>
+                        <p>
+                            If you’re the kind of person who needs to see it all in person then head over to your closest
+                            Mor Furniture for Less and check out the way we lay out rooms. We strategically put together
+                            rooms for you with full sets of furniture. This way you don’t have to imagine what a
+                            finished room will look like.
+                        </p>
+                        <h4>Sketch out your floor plan</h4>
+                        <p>
+                            Now that you’re the one calling all of the shots you can layout the room just the way you
+                            like it. Take the time to sketch it out, come up with a few ideas and keep the extras
+                            in your back pocket so you can give the room a refresh in a few months. If you’re the
+                            kind of person who needs to physically see how things layout then put those moving boxes
+                            to good use and place them around the room as furniture.
+                        </p>
+                        <p><img src="assets/images/blog-4.jpg" alt="This is an alternative image description. It will generate auto caption."/></p>
+                        <p>
+                            If moving boxes sounds like too much work and your artist skills aren’t exactly up to par
+                            there are many different room builders and planners online. All you do is upload an image
+                            of the room and start planning!
+                        </p>
+                        <h4>Choose your color palette</h4>
+                        <p>
+                            Your color palette can come from a variety of inspiration. There are designers out there
+                            who say to take that inspiration from your floor color, others say to use a piece of
+                            art, but one of the best ways to create the perfect space for you is to use an item that
+                            you truly love. It could be anything from a favorite outfit you wear to a rug. Once your
+                            color palette is chosen work backward adding in neutrals to break up the bolder colors.
+                            Save the bright colors for the accent pieces, this way if you decide to change things
+                            up in a few years you’re not totally locked in.
+                        </p>
+                    </div>
+                </div> <!--/product-->
+            </div> <!--popup-main-->
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            @foreach (var blogPost in Model.BlogPosts)
+            {
+                var interiorId = $"interiorId{blogPost.Id}";
+
+                <div class="col-md-6">
+                    <figure>
+                        <figcaption style="background-image:url(@blogPost.FeaturedImageUrl)">
+                            <img src="@blogPost.FeaturedImageUrl" alt="" />
+                        </figcaption>
+                        <a href="#@interiorId" class="btn btn-clean mfp-open mfp-open-scrollto">@blogPost.Heading</a>
+                    </figure>
+                </div>
+                <div class="popup-main popup-main-article mfp-hide" id="@interiorId">
+                    <!-- === product popup === -->
+                    <div class="product">
+                        <!-- === popup-title === -->
+                        <div class="popup-title">
+                            <div class="h1 title">
+                                @if (blogPost.Categories != null && blogPost.Categories.Any())
+                                {
+                                    <small>@blogPost.Categories.First().CategoryName</small>
+                                }
+                            </div>
+                        </div>
+                        <div class="popup-content">
+                            <p><img src="@blogPost.FeaturedImageUrl" alt="This is an alternative image description. It will generate auto caption." /></p>
+                            <p>
+                                @blogPost.Content
+                            </p>
+                        </div>
+                    </div> <!--/product-->
+                </div>
+            }
+        </div>
+    </div>
+}
+</section>

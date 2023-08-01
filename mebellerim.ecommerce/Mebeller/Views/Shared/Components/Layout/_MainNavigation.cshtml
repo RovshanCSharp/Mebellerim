@@ -1,0 +1,405 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@inject IProductService ProductService
+@inject IAccountService AccountService
+
+
+@{
+    var isUserSignedIn =
+        AccountService.IsUserSignedIn();
+}
+
+<div class="navigation navigation-main">
+<a href="/" title="logo" class="logo">
+    <img src="/img/logo.png" alt=""/>
+</a>
+<a href="#" title="login" class="open-login">
+    <i class="icon icon-user"></i>
+</a>
+
+<a href="#" class="open-cart"><i class="icon icon-cart"></i> 
+    <span class="nav-shop__circle">@(isUserSignedIn ? await ProductService.GetLoggedUserOpenOrderDetailsCountAsync() : 0)</span>
+</a>
+
+<a href="#" title="search" class="open-search">
+    <i class="icon icon-magnifier"></i>
+</a>
+<a href="#" title="menu" class="open-menu">
+    <i class="icon icon-menu"></i>
+</a>
+<div class="floating-menu">
+<!--mobile toggle menu trigger-->
+<div class="close-menu-wrapper">
+    <span class="close-menu">
+        <i class="icon icon-cross"></i>
+    </span>
+</div>
+<ul>
+<li>
+    <a href="/">
+        Homepage
+        <span class="open-dropdown">
+            <i class="fa fa-angle-down"></i>
+        </span>
+    </a>
+    <div class="navbar-dropdown">
+        <div class="navbar-box">
+            <div class="box-1">
+                <div class="box">
+                    <div class="h2">Find your inspiration</div>
+                    <div class="clearfix">
+                        <p>Homes that differ in terms of style, concept and architectural solutions have been furnished by Furniture Factory. These spaces tell of an international lifestyle that expresses modernity, research and a creative spirit.</p>
+                        <a class="btn btn-clean btn-big" href="/Products">Shop now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="box-2">
+                <div class="box clearfix">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <ul>
+                                <li class="label">Themes</li>
+                              
+                                <li>
+                                    <a href="/Slider">Slider Fullscreen</a>
+                                </li>
+                                <li>
+                                    <a href="/Tabsy">Home - Tabsy</a>
+                                </li>
+                                <li>
+                                    <a href="/OnePage">One page</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul>
+                                <li class="label">Product page</li>
+                                <li>
+                                    <a href="/Products">Products grid</a>
+                                </li>
+                                <li>
+                                    <a href="/ProductList">Products list</a>
+                                </li>
+                                <li>
+                                    <a href="/ProductDetail/1">Product overview</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <ul>
+                                <li class="label">Blog</li>
+                                <li>
+                                    <a href="/Blog">Blog list</a>
+                                </li>
+                                <li>
+                                    <a href="/Categories">Category</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+<li>
+    <a href="#">
+        Pages
+        <span class="open-dropdown">
+            <i class="fa fa-angle-down"></i>
+        </span>
+    </a>
+    <div class="navbar-dropdown navbar-dropdown-single">
+        <div class="navbar-box">
+            <div class="box-2">
+                <div class="box clearfix">
+                    <ul>
+                        <li class="label">Single dropdown</li>
+                        <li>
+                            <a href="/About-us">About us</a>
+                        </li>
+                        <li>
+                            <a href="/Contact-us">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+<li>
+    <a href="/Categories">
+        Categories
+        <span class="open-dropdown">
+            <i class="fa fa-angle-down"></i>
+        </span>
+    </a>
+    <div class="navbar-dropdown">
+        <div class="navbar-box">
+            <div class="box-1">
+                <div class="image">
+                    <img src="/img/blog-2.jpg" alt="Lorem ipsum"/>
+                </div>
+                <div class="box">
+                    <div class="h2">Best ideas</div>
+                    <div class="clearfix">
+                        <p>Homes that differ in terms of style, concept and architectural solutions have been furnished by Furniture Factory. These spaces tell of an international lifestyle that expresses modernity, research and a creative spirit.</p>
+                        <a class="btn btn-clean btn-big" href="#">Explore</a>
+                    </div>
+                </div>
+            </div>
+            <div class="box-2">
+                <div class="clearfix categories">
+                    <div class="row">
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-sofa"></i>
+                                    <figcaption>Divanlar</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-armchair"></i>
+                                    <figcaption>Armchairs</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-chair"></i>
+                                    <figcaption>Chairs</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-dining-table"></i>
+                                    <figcaption>Dining tables</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="javascript:void 0;">
+                                <figure>
+                                    <i class="f-icon f-icon-media-cabinet"></i>
+                                    <figcaption>Media storage</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-table"></i>
+                                    <figcaption>Tables</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-bookcase"></i>
+                                    <figcaption>Bookcase</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-bedroom"></i>
+                                    <figcaption>Bedroom</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-nightstand"></i>
+                                    <figcaption>Nightstand</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-children-room"></i>
+                                    <figcaption>Children room</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-kitchen"></i>
+                                    <figcaption>Kitchen</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-bathroom"></i>
+                                    <figcaption>Bathroom</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-wardrobe"></i>
+                                    <figcaption>Wardrobe</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-shoe-cabinet"></i>
+                                    <figcaption>Shoe cabinet</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <a href="/Products?SelectedCategories=6">
+                                <figure>
+                                    <i class="f-icon f-icon-office"></i>
+                                    <figcaption>Office</figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+<li>
+    <a href="#">
+        Megamenu
+        <span class="open-dropdown">
+            <i class="fa fa-angle-down"></i>
+        </span>
+    </a>
+    <div class="navbar-dropdown">
+        <div class="navbar-box">
+            <div class="box-2">
+                <div class="box clearfix">
+                    <div class="row">
+                        <div class="clearfix">
+                            <div class="col-md-3">
+                                <ul>
+                                    <li class="label">Seating</li>
+                                    <li>
+                                        <a href="/Products?SelectedCategories=6">Benches</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Submenu <span class="label label-warning">New</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Chaises</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Recliners</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <ul>
+                                    <li class="label">Storage</li>
+                                    <li>
+                                        <a href="javascript:void 0;">Bockcases</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Closets</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Wardrobes</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Dressers <span class="label label-success">Trending</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Sideboards </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <ul>
+                                    <li class="label">Tables</li>
+                                    <li>
+                                        <a href="javascript:void 0;">Consoles</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Desks</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Dining tables</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Occasional tables</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <ul>
+                                    <li class="label">Chairs</li>
+                                    <li>
+                                        <a href="javascript:void 0;">Dining Chairs</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Office Chairs</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Lounge Chairs <span class="label label-warning">Offer</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Stools</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <div class="col-md-3">
+                                <ul>
+                                    <li class="label">Kitchen</li>
+                                    <li>
+                                        <a href="javascript:void 0;">Kitchen types</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Kitchen elements <span class="label label-info">50%</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Bars</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Wall decoration</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <ul>
+                                    <li class="label">Beds</li>
+                                    <li>
+                                        <a href="javascript:void 0;">Beds</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void 0;">Sofabeds</a>
+                                    </li>
+                                </ul>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+
+</ul>
+</div>
+</div>

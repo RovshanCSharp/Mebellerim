@@ -1,0 +1,53 @@
+﻿<section class="blog" style="background-image: url(img/blog-2.jpg)">
+    <div class="container">
+        <!-- === blog header === -->
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h1 class="h2 title">Blog</h1>
+                    <div class="text">
+                        <p>Latest news from the blog</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="row">
+            @if (Model.BlogPosts != null)
+            {
+                foreach (var blogPost in Model.BlogPosts)
+                {
+                    <div class="col-sm-4">
+                        <article>
+                            <a href="/blog/@blogPost.UrlHandle">
+                                <div class="image" style="background-image:url(@blogPost.FeaturedImageUrl)">
+                                    <img src="#" alt="" />
+                                </div>
+                                <div class="entry entry-table">
+                                    <div class="date-wrapper">
+                                        <div class="date">
+                                            <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                            <strong>@blogPost.PublishedDate.Day</strong>
+                                            <span>@blogPost.PublishedDate.Year</span>
+                                        </div>
+                                    </div>
+                                    <div class="title">
+                                        <h2 class="h5">@blogPost.PageTitle</h2>
+                                    </div>
+                                </div>
+                                <div class="show-more">
+                                    <span class="btn btn-main btn-block">Read more</span>
+                                </div>
+                            </a>
+                        </article>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- === button more === -->
+        <div class="wrapper-more">
+            <a href="/Blog" class="btn btn-main">View all posts</a>
+        </div>
+    </div> <!--/container-->
+</section>

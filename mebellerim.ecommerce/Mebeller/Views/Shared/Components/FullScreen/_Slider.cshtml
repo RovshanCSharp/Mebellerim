@@ -1,0 +1,109 @@
+﻿@model Mebeller.Models.ViewModels.Home.FullScreenViewModel
+
+@{
+    var primaryBanners = Model.Banners.Where(p => p.IsPrimary);
+    var primary = primaryBanners.ToList();
+}
+
+<section id="page-home" class="header-content">
+    @if (!primary.Any())
+    {
+        <div class="owl-slider owl-slider-fullscreen">
+
+            <!-- === slide item === -->
+
+            <div class="item" style="background-image:url(img/gallery-2.jpg)">
+                <div class="box">
+                    <div class="container text-center">
+                        <h2 class="title animated h1" data-animation="fadeInDown">Modern furniture theme</h2>
+                        <div class="animated" data-animation="fadeInUp">
+                            Modern & powerfull template. <br/> Clean design & reponsive
+                            layout. Google fonts integration
+                        </div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="https://themeforest.net/item/mobel-furniture-website-template/20382155" target="_blank" class="btn btn-main"><i class="icon icon-cart"></i> Buy this template</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === slide item === -->
+
+            <!-- === slide item === -->
+        
+            <div class="item" style="background-image:url(img/gallery-1.jpg)">
+                <div class="box">
+                    <div class="container text-center">
+                        <h2 class="title animated h1" data-animation="fadeInDown">Furniture House</h2>
+                        <div class="animated" data-animation="fadeInUp">Unlimited Choices. Unbeatable Prices. Free Shipping.</div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="#" class="btn btn-clean">Get inspired</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="item" style="background-image:url(img/gallery-2.jpg)">
+                <div class="box">
+                    <div class="container text-center">
+                        <h2 class="title animated h1" data-animation="fadeInDown">My Furniture</h2>
+                        <div class="animated" data-animation="fadeInUp">
+                            Modern furniture <br/> Everything you need
+                        </div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="#" target="_blank" class="btn btn-main"><i class="icon icon-cart"></i> Shop now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- === slide item === -->
+
+            <div class="item" style="background-image:url(img/gallery-2.jpg)">
+                <div class="box">
+                    <div class="container text-center">
+                        <h2 class="title animated h1" data-animation="fadeInDown">
+                            My Furniture.
+                        </h2>
+                        <div class="desc animated" data-animation="fadeInUp">
+                            Everything you need
+                        </div>
+                        <div class="desc animated" data-animation="fadeInUp">
+                            Stay tuned
+                        </div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="#" target="_blank" class="btn btn-clean">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    }
+    else
+    {
+        <div class="owl-slider owl-slider-fullscreen">
+            @foreach (var banner in primary)
+            {
+                <div class="item">
+                    <div class="slider-img">
+                        <img src="/img/@banner.Image.ImagePath" alt="Slider Product">
+                    </div>
+                    <div class="box">
+                        <div class="container text-center">
+                            <h2 class="title animated h1" data-animation="fadeInDown">@banner.Title</h2>
+                            <div class="animated" data-animation="fadeInUp">
+                                @banner.Description <br> Everything you need
+                            </div>
+                            <div class="animated" data-animation="fadeInUp">
+                                <a href="@banner.Link" target="_blank" class="btn btn-main">
+                                    <i class="icon icon-cart"></i> Shop now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>

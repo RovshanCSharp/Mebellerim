@@ -1,0 +1,84 @@
+﻿@model Mebeller.Areas.Admin.ViewModels.Messages.ReplyToMessageEmailTemplateViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <title>Reply Email</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+        
+   <link href="/css/ReplyEmail.css"/>
+</head>
+
+<body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+    <!-- HIDDEN PREHEADER TEXT -->
+    <div style="display: none; font-size: 1px; color: #384aeb; line-height: 1px;  max-height: 0; max-width: 0; opacity: 0; overflow: hidden;"> We're thrilled to have you here! Get ready to dive into your new account. </div>
+    <table>
+        <!-- LOGO -->
+        <tr>
+            <td style="padding: 40px 10px;"></td>
+        </tr>
+        <tr>
+         <td style="padding: 40px 10px 0;">
+           <img src="https://static.thenounproject.com/png/254136-200.png" alt="Question answered icon" width="125" height="120" style="display: block; border: 0;">
+           <h1 style="color: #111111; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px; padding: 20px; border-radius: 4px 4px 0 0;">Your Question Answered</h1>
+         </td>
+       </tr>
+        <tr>
+          <td style="padding: 40px 10px; background-color: #f4f4f4;">
+            <p>Your question: <span style="color: crimson;">@Model.MessageSubject</span></p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 30px; color: #666666; font-size: 18px; font-weight: 400; line-height: 25px; background-color: #ffffff;">
+            <p>Here's the answer to your question:</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background-color: #ffffff;">
+            <table>
+              <tr>
+                <td style="padding: 20px 30px 60px; background-color: #ffffff;">
+                  <p style="font-size: 19px; color: #ffffff; text-decoration: none; padding: 15px 25px; border: 1px solid #384aeb; display: inline-block; background-color: #384aeb; border-radius: 3px;">@Model.MessageReplyDescription</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 30px 30px 20px; color: #666666; font-size: 18px; font-weight: 400; line-height: 25px; background-color: #ffffff;">
+            <p>If you encounter any issues, please don't hesitate to contact us through the "Contact Us" section.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 30px; color: #666666; font-size: 18px; font-weight: 400; line-height: 25px; background-color: #ffffff; border-radius: 0 0 4px 4px;">
+            <p>Best regards,<b>Mebellerim Store</b></p>
+          </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px 10px;">
+                <table style="max-width: 600px;">
+                    <tr>
+                        <td style="padding: 30px; border-radius: 4px; color: #666666; font-size: 18px; font-weight: 400; line-height: 25px; background-color: #f4f4f4;">
+                            <h2 style="font-size: 24px; font-weight: 400; color: #000; margin: 0;">Need Help?</h2>
+                            <p style="margin: 10px 0 0 0;">If you have any questions or concerns, <a href="https://localhost:44329/Contact-Us" target="_blank" style="color: #384aeb; text-decoration: none;">contact us</a>.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 20px 30px; color: #666; font-size: 14px; font-weight: 400; line-height: 18px; text-align: center;">
+                            <p style="margin: 0;">This email was sent automatically, please do not reply.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

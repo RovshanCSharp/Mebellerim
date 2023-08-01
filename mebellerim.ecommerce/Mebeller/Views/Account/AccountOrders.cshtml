@@ -1,0 +1,117 @@
+﻿@using Mebeller.Data.Utilities
+@using Mebeller.Models.Product
+@using Mebeller.Models.ViewModels.Product
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+@{
+    ViewData["Title"] = "Account";
+    Layout = "Home/_Layout";
+}
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+    <header>
+        <div class="container text-center">
+            <h2 class="h2 title">Account</h2>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li>
+                    <a href="/">
+                        <span class="icon icon-home"></span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="#">Orders</a>
+                </li>
+            </ol>
+        </div>
+    </header>
+</section>
+
+<hr/>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 mb-md-0 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white text-center">
+                    <h5 class="mb-0">Manage</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="@Url.Action("ManageAccount")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-cogs mr-2"></i>Overview
+                    </a>
+                    <a href="@Url.Action("EditAccount")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-user mr-2"></i>Edit Account
+                    </a>
+                    <a href="@Url.Action("FavoriteProducts")" class="list-group-item list-group-item-action">
+                        <i class="fa fa-heart mr-2"></i>Wishlist
+                    </a>
+                    <a href="@Url.Action("AccountOrders")" class="list-group-item list-group-item-action active">
+                        <i class="fa fa-shopping-cart mr-2"></i>Orders
+                    </a>
+                    <hr/>
+                    <form asp-action="LogOut" class="mt-3">
+                        <button class="btn btn-danger btn-block" type="submit">
+                            <i class="fa fa-sign-out mr-2"></i>Sign Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    @if (Model.OrderList.NotNullOrEmpty())
+                    {
+                        <table class="table table-responsive-lg table-responsive-sm table-striped table-bordered text-center table-light">
+                            <thead>
+                            <tr>
+                                <th class="px-4"><i class="glyphicon glyphicon-list-alt"></i> Order</th>
+                                <th><i class="glyphicon glyphicon-calendar"></i> Order Date</th>
+                                <th><i class="glyphicon glyphicon-info-sign"></i> Order status</th>
+                                <th class="px-5"><i class="glyphicon glyphicon-usd"></i> Total Price</th>
+                                <th><i class="glyphicon glyphicon-cog"></i> Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var order in Model.OrderList)
+                            {
+                                <tr>
+                                    <td class="align-middle">#@order.OrderId</td>
+                                    <td class="align-middle">@order.CreateTime</td>
+                                    <td class="align-middle text-success">@order.OrderStatus</td>
+                                    <td class="align-middle">@order.OrderTotalPrice</td>
+                                    <td class="align-middle">
+                                        @if (order.OrderStatus == OrderStatus.AwaitingPayment.GetDescription())
+                                        {
+                                            <a class="btn btn-warning m-1" asp-controller="Product" asp-action="CartCheckOut"><i class="glyphicon glyphicon-shopping-cart"></i> Checkout</a>
+                                            <a class="btn btn-warning m-1" asp-action="AccountOrder" asp-route-orderId="@order.OrderId"><i class="glyphicon glyphicon-file"></i> Invoice</a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn btn-warning m-1" asp-action="AccountOrder" asp-route-orderId="@order.OrderId"><i class="glyphicon glyphicon-file"></i> Invoice</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <h2>Order list is empty</h2>
+                            <p>There are currently no products available to display.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

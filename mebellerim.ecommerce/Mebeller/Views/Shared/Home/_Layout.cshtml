@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mebellerim</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Stylesheets -->
+    <link rel="icon" href="favicon.ico">
+    <partial name="Components/Layout/_Styles"/>
+    <link rel="stylesheet" href="/css/Products/style.css"/>
+    @await RenderSectionAsync("Styles", false)
+</head>
+<body>
+<div class="page-loader"></div>
+<div class="wrapper">
+    <!-- Navigation -->
+    <partial name="Components/Layout/_Navigation"/>
+
+    <main>@RenderBody()</main>
+
+    <!-- Footer -->
+    <partial name="Components/Layout/_Footer"/>
+</div>
+
+<!-- JavaScript -->
+<partial name="Components/Layout/_Scripts"/>
+@await RenderSectionAsync("Scripts", false)
+</body>
+</html>

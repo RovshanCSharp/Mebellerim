@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model  Mebeller.Models.ViewModels.Home.FullScreenViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Mobile Web-app fullscreen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Meta tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <!--Title-->
+    <title>Mebellerim</title>
+
+    <!--CSS styles-->
+    <partial name="Components/Layout/_Styles"/>
+</head>
+
+<body>
+
+<div class="page-loader"></div>
+
+<div class="wrapper">
+
+<!-- ======================== Navigation ======================== -->
+
+<partial name="Components/FullScreen/_Navigation"/>
+
+<!-- ========================  Header content ======================== -->
+
+<partial name="Components/FullScreen/_Slider"/>
+
+<!-- ========================  Banner ======================== -->
+
+<partial name="Components/FullScreen/_Banner"/>
+
+<!-- ========================  Cards ======================== -->
+
+<partial name="Components/FullScreen/_Cards"/>
+
+<!-- ========================  Contact ======================== -->
+
+<partial name="Components/FullScreen/_Contact"/>
+
+<!-- ================== Footer  ================== -->
+
+<main>@RenderBody()</main>
+
+<partial name="Components/Layout/_Footer"/>
+
+</div> 
+
+<!--JS files-->
+<partial name="Components/Layout/_Scripts"/>
+
+</body>
+
+</html>

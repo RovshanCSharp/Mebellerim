@@ -1,0 +1,752 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+@{
+    var doesModelHasAnyProduct = Model.Products.Any();
+    var primaryBanners = Model.Banners.Where(p => p.IsPrimary);
+    var primary = primaryBanners.ToList();
+}
+
+<section class="main-header">
+    <header class="hidden">
+        <div class="container">
+            <h1 class="h2 title">Welcome to our site</h1>
+        </div>
+    </header>
+</section>
+
+
+<!-- ========================  Tabsy wrapper ======================== -->
+
+<section class="tabsy-wrapper tabsy-wrapper-frontpage">
+
+    <div class="container">
+
+        <!-- === header title === -->
+
+        <header class="hidden">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Latest projects</h2>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabsy" style="background-image:url(img/gallery-1.jpg)">
+
+            <!-- === tabsy images === -->
+
+            @if (Model.BlogPosts == null)
+            {
+                <div class="tabsy-images">
+                    <div id="idImgPrim1">
+                        <img src="/img/gallery-1.jpg" alt="Alternate Text"/>
+                    </div>
+                    <div id="idImgPrim2">
+                        <img src="/img/gallery-2.jpg" alt="Alternate Text"/>
+                    </div>
+                    <div id="idImgPrim3">
+                        <img src="/img/gallery-3.jpg" alt="Alternate Text"/>
+                    </div>
+                    <div id="idImgPrim4">
+                        <img src="/img/gallery-4.jpg" alt="Alternate Text"/>
+                    </div>
+                    <div id="idImgPrim5">
+                        <img src="/img/gallery-5.jpg" alt="Alternate Text"/>
+                    </div>
+                    <div id="idImgPrim6">
+                        <img src="/img/gallery-6.jpg" alt="Alternate Text"/>
+                    </div>
+                    <div id="idImgPrim7">
+                        <img src="/img/gallery-7.jpg" alt="Alternate Text"/>
+                    </div>
+                </div>
+                <div class="tabsy-links">
+
+                    <div class="row">
+
+                        <figure class="col-xs-6 col-sm-3 col-md-3 current" data-image="idImgPrim1">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">28 July 2017</span>
+                                <span class="h4 title">The 3 Tricks that Quickly Became Rules</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim2">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">20 July 2017</span>
+                                <span class="h4 title">Decorating When You're Starting Out or Starting Over</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure class="col-xs-12 col-md-6 col-sm-3" data-image="idImgPrim3">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">15 July 2017</span>
+                                <span class="h4 title">What does your favorite dining chair say about you? First things first, find out what you like</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim4">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">08 July 2017</span>
+                                <span class="h4 title">Have a look at our new projects!</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim5">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">05 July 2017</span>
+                                <span class="h4 title">Making the Most Out of Your Kids Old Bedroom</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim6">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">03 July 2017</span>
+                                <span class="h4 title">4 Products to Warm Up Your Winter</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim7">
+                            <a href="#" class="link">Anchor link</a>
+                            <figcaption>
+                                <span class="date">01 July 2017</span>
+                                <span class="h4 title">Extending Your Living Area</span>
+                                <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                            </figcaption>
+                        </figure>
+
+                    </div> <!--/row-->
+                </div>
+            }
+            else
+            {
+                <div class="tabsy-images">
+                    @foreach (var blogImage in Model.BlogPosts)
+                    {
+                        <div id="@($"idImgPrim{blogImage.Id}")">
+                            <img src="@blogImage.FeaturedImageUrl" alt="Alternate Text" />
+                        </div>
+                    }
+                </div>
+
+                <div class="tabsy-links">
+                    <div class="row">
+                        @foreach (var blogPost in Model.BlogPosts)
+                        {
+                            <figure class="col-xs-6 col-sm-3 col-md-3 current" data-image="@($"idImgPrim{blogPost.Id}")">
+                                <a href="/blog/@blogPost.UrlHandle" class="link">Anchor link</a>
+                                <figcaption>
+                                    <div class="date">
+                                        <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                        <strong>@blogPost.PublishedDate.Day</strong>
+                                        <span>@blogPost.PublishedDate.Year</span>
+                                    </div>
+
+                                    <span class="h4 title">@blogPost.PageTitle</span>
+                                    <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                </figcaption>
+                            </figure>
+                        }
+                    </div> <!--/row-->
+                </div>
+
+            }
+
+        </div>
+    </div> <!--/container-->
+
+</section>
+
+<!-- ========================  Icons slider ======================== -->
+<partial name="Components/Home/_IconsSlider"/>
+
+<!-- ========================  Products widget ======================== -->
+
+<section class="products">
+
+    <div class="container">
+
+        <!-- === header title === -->
+
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Popular products</h2>
+                    <div class="text">
+                        <p>Check out our latest collections</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @if (doesModelHasAnyProduct)
+        {
+            <div class="row">
+                @{
+                    await Html.RenderPartialAsync("Components/Products/PartialShowPopularProducts", Model.Products);
+                }
+            </div>
+        }
+
+        <div class="wrapper-more">
+            <a href="/Products" class="btn btn-main">View store</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- ========================  Stretcher widget ======================== -->
+
+<section class="stretcher-wrapper">
+
+    <!-- === stretcher header === -->
+
+    <header class="hidden">
+        <!--remove class 'hidden'' to show section header -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h1 class="h2 title">Popular categories</h1>
+                    <div class="text">
+                        <p>
+                            Whether you are changing your home, or moving into a new one, you will find a huge selection of quality living room furniture,
+                            bedroom furniture, dining room furniture and the best value at Furniture factory
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- === stretcher === -->
+
+    <ul class="stretcher">
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-1.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-bedroom"></span>
+                    <span class="text-intro">Bedroom</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Modern furnishing projects</h4>
+                <figcaption>New furnishing ideas</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="/Blog">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-2.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-sofa"></span>
+                    <span class="text-intro">Living room</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Furnishing and complements</h4>
+                <figcaption>Discover the design table collection</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="#">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-2.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-office"></span>
+                    <span class="text-intro">Office</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Which is Best for Your Home</h4>
+                <figcaption>Wardrobes vs Walk-In Closets</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="#">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-4.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-bathroom"></span>
+                    <span class="text-intro">Bathroom</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Keeping Things Minimal</h4>
+                <figcaption>Creating Your Very Own Bathroom</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="#">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item more=== -->
+
+        <li class="stretcher-item more">
+            <div class="more-icon">
+                <span data-title-show="Show more" data-title-hide="+"></span>
+            </div>
+            <a href="/Categories" title="show more"></a>
+        </li>
+
+    </ul>
+</section>
+
+<!-- ========================  Blog Dark ======================== -->
+
+<section class="blog blog-block">
+
+    <div class="container">
+
+        <!-- === blog header === -->
+
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Interior ideas</h2>
+                    <div class="text">
+                        <p>Keeping things minimal</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="row">
+            @if (Model.BlogPosts != null)
+            {
+                @foreach (var blogPost in Model.BlogPosts)
+                {
+                    <div class="col-sm-4">
+                        <article>
+                            <a href="/blog/@blogPost.UrlHandle">
+                                <div class="image">
+                                    <img src="@blogPost.FeaturedImageUrl" alt=""/>
+                                </div>
+                                <div class="entry entry-block">
+                                    <div class="date">
+                                        <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                        <strong>@blogPost.PublishedDate.Day</strong>
+                                        <span>@blogPost.PublishedDate.Year</span>
+                                    </div>
+                                    
+                                    <div class="title">
+                                        <h2 class="h3">@blogPost.PageTitle</h2>
+                                    </div>
+                                    <div class="description">
+                                        <p>@blogPost.ShortDescription</p>
+                                    </div>
+                                </div>
+                                <div class="show-more">
+                                    <span class="btn btn-main btn-block">Read more</span>
+                                </div>
+                            </a>
+                        </article>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- === button more === -->
+
+        <div class="wrapper-more">
+            <a href="/Blog" class="btn btn-main">View all posts</a>
+        </div>
+
+    </div> <!--/container-->
+</section>
+
+<!-- ======================== Quotes ======================== -->
+
+<section class="quotes quotes-slider" style="background-image:url(img/gallery-4.jpg)">
+    <div class="container">
+
+        <!-- === quotes header === -->
+
+        <header>
+            <h2 class="title">What clients say</h2>
+        </header>
+
+        <div class="row">
+
+            @if (Model?.Comments?.Any() == true)
+            {
+                <div class="quote-carousel">
+
+                    <!-- === quoute item === -->
+
+                    <div class="quote">
+                        <div class="image">
+                            <img src="/img/user-3.jpg" alt=""/>
+                        </div>
+                        @foreach (var comment in Model.UserDetailsViewModel.User.UserComments)
+                        {
+                            <div class="text">
+                                <h4>@comment.User.UserName</h4>
+                                <p>@comment.CommentDescription</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else{
+            <div class="quote-carousel">
+
+                <!-- === quoute item === -->
+
+                <div class="quote">
+                    <div class="image">
+                        <img src="img/user-1.jpg" alt=""/>
+                    </div>
+                    <div class="text">
+                        <h4>Jenna Hale</h4>
+                        <p>Ipsum dolore eros dolore <br/>dolor dolores sit iriure</p>
+                    </div>
+                </div>
+
+                <!-- === quoute item === -->
+
+                <div class="quote">
+                    <div class="image">
+                        <img src="img/user-1.jpg" alt=""/>
+                    </div>
+                    <div class="text">
+                        <h4>Glen Jordan</h4>
+                        <p>Ipsum dolore eros dolore <br/>dolor dolores sit iriure</p>
+                    </div>
+                </div>
+
+                <!-- === quoute item === -->
+
+                <div class="quote">
+                    <div class="image">
+                        <img src="img/user-1.jpg" alt=""/>
+                    </div>
+                    <div class="text">
+                        <h4>Lea Nils</h4>
+                        <p>Ipsum dolore eros dolore <br/>dolor dolores sit iriure</p>
+                    </div>
+                </div>
+
+                <!-- === quoute item === -->
+
+                <div class="quote">
+                    <div class="image">
+                        <img src="img/user-1.jpg" alt=""/>
+                    </div>
+                    <div class="text">
+                        <h4>Nora Star</h4>
+                        <p>Ipsum dolore eros dolore <br/>dolor dolores sit iriure</p>
+                    </div>
+                </div>
+            </div> 
+            }
+        </div> 
+    </div> 
+</section>
+
+<!-- ========================  Blog ======================== -->
+
+<section class="blog" style="background-image: url(img/blog-2.jpg)">
+    <div class="container">
+        <!-- === blog header === -->
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h1 class="h2 title">Blog</h1>
+                    <div class="text">
+                        <p>Latest news from the blog</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="row">
+            @if (Model?.BlogPosts != null)
+            {
+                foreach (var blogPost in Model.BlogPosts)
+                {
+                    <div class="col-sm-4">
+                        <article>
+                            <a href="/blog/@blogPost.UrlHandle">
+                                <div class="image" style="background-image:url(@blogPost.FeaturedImageUrl)">
+                                    <img src="#" alt=""/>
+                                </div>
+                                <div class="entry entry-table">
+                                    <div class="date-wrapper">
+                                        <div class="date">
+                                            <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                            <strong>@blogPost.PublishedDate.Day</strong>
+                                            <span>@blogPost.PublishedDate.Year</span>
+                                        </div>
+                                    </div>
+                                    <div class="title">
+                                        <h2 class="h5">@blogPost.PageTitle</h2>
+                                    </div>
+                                </div>
+                                <div class="show-more">
+                                    <span class="btn btn-main btn-block">Read more</span>
+                                </div>
+                            </a>
+                        </article>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- === button more === -->
+        <div class="wrapper-more">
+            <a href="/Blog" class="btn btn-main">View all posts</a>
+        </div>
+    </div> <!--/container-->
+</section>
+
+<!-- ========================  Tabsy wrapper ======================== -->
+
+<section class="tabsy-wrapper">
+
+    <div class="container">
+
+        <!-- === header title === -->
+
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Latest articles</h2>
+                    <div class="text">
+                        <p>Check out our latest news</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabsy" style="background-image:url(img/gallery-4.jpg)">
+       
+                   <!-- === tabsy images === -->
+       
+                   @if (Model?.BlogPosts == null)
+                   {
+                       <div class="tabsy-images">
+                           <div id="idImgPrim1">
+                               <img src="/img/gallery-1.jpg" alt="Alternate Text"/>
+                           </div>
+                           <div id="idImgPrim2">
+                               <img src="/img/gallery-2.jpg" alt="Alternate Text"/>
+                           </div>
+                           <div id="idImgPrim3">
+                               <img src="/img/gallery-3.jpg" alt="Alternate Text"/>
+                           </div>
+                           <div id="idImgPrim4">
+                               <img src="/img/gallery-4.jpg" alt="Alternate Text"/>
+                           </div>
+                           <div id="idImgPrim5">
+                               <img src="/img/gallery-5.jpg" alt="Alternate Text"/>
+                           </div>
+                           <div id="idImgPrim6">
+                               <img src="/img/gallery-6.jpg" alt="Alternate Text"/>
+                           </div>
+                           <div id="idImgPrim7">
+                               <img src="/img/gallery-7.jpg" alt="Alternate Text"/>
+                           </div>
+                       </div>
+                       <div class="tabsy-links">
+       
+                           <div class="row">
+       
+                               <figure class="col-xs-6 col-sm-3 col-md-3 current" data-image="idImgPrim1">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">28 July 2017</span>
+                                       <span class="h4 title">The 3 Tricks that Quickly Became Rules</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                               <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim2">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">20 July 2017</span>
+                                       <span class="h4 title">Decorating When You're Starting Out or Starting Over</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                               <figure class="col-xs-12 col-md-6 col-sm-3" data-image="idImgPrim3">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">15 July 2017</span>
+                                       <span class="h4 title">What does your favorite dining chair say about you? First things first, find out what you like</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                               <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim4">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">08 July 2017</span>
+                                       <span class="h4 title">Have a look at our new projects!</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                               <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim5">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">05 July 2017</span>
+                                       <span class="h4 title">Making the Most Out of Your Kids Old Bedroom</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                               <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim6">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">03 July 2017</span>
+                                       <span class="h4 title">4 Products to Warm Up Your Winter</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                               <figure class="col-xs-6 col-sm-3 col-md-3" data-image="idImgPrim7">
+                                   <a href="#" class="link">Anchor link</a>
+                                   <figcaption>
+                                       <span class="date">01 July 2017</span>
+                                       <span class="h4 title">Extending Your Living Area</span>
+                                       <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                   </figcaption>
+                               </figure>
+       
+                           </div> <!--/row-->
+                       </div>
+                   }
+                   else
+                   {
+                       <div class="tabsy-images">
+                           @foreach (var blogImage in Model.BlogPosts)
+                           {
+                               <div id="@($"idImgPrim{blogImage.Id}")">
+                                   <img src="@blogImage.FeaturedImageUrl" alt="Alternate Text" />
+                               </div>
+                           }
+                       </div>
+       
+                       <div class="tabsy-links">
+                           <div class="row">
+                               @foreach (var blogPost in Model.BlogPosts)
+                               {
+                                   <figure class="col-xs-6 col-sm-3 col-md-3 current" data-image="@($"idImgPrim{blogPost.Id}")">
+                                       <a href="/blog/@blogPost.UrlHandle" class="link">Anchor link</a>
+                                       <figcaption>
+                                           <span class="date">@blogPost.PublishedDate.ToString("MM/dd/yyyy")</span>
+                                           <span class="h4 title">@blogPost.PageTitle</span>
+                                           <span class="desc">You’ve finally reached this point in your life- you’ve bought your first home, moved into your very own apartment...</span>
+                                       </figcaption>
+                                   </figure>
+                               }
+                           </div> <!--/row-->
+                       </div>
+       
+                   }
+       
+               </div>
+        <!-- === button more === -->
+
+        <div class="wrapper-more">
+            <a href="/Blog" class="btn btn-clean-dark">Explore more</a>
+        </div>
+    </div> <!--/container-->
+
+</section>
+
+<!-- ========================  Banner ======================== -->
+
+<section class="banner" style="background-image:url(img/gallery-4.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8 text-center">
+                <h2 class="title">Our story</h2>
+                <p>
+                    We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy to find exceptional
+                    artisans and bring their unique handcrafted objects to connoisseurs everywhere.
+                </p>
+                <p>
+                    <a href="#" class="btn btn-clean">Read full story</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================  Instagram ======================== -->
+
+<section class="instagram">
+
+    <!-- === instagram header === -->
+
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="h2 title">Follow us <i class="fa fa-instagram fa-2x"></i> Instagram </h2>
+                    <div class="text">
+                        <p>Mebellerim</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- === instagram gallery === -->
+
+    <div class="gallery clearfix">
+        <a class="item" href="#">
+            <img src="https://images.offerup.com/HBTXIkk2fDFF1B9uSj9S6Xi-0jM=/565x565/482f/482f1d365606420798b8d79db07556c2.jpg" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://www.buyerfox.com/image/cache/catalog/5d3a7a3deedb057fe80124f64e54c7df-550x550.jpg" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://housing.com/news/wp-content/uploads/2022/11/image17-4.png" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://rowicohome.com/globalassets/miljobilder-mobler/bord/matbord/skye-matbord-reily-stol-564x564.jpg?width=600&quality=80" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://housing.com/news/wp-content/uploads/2022/11/image1-125.png" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://www.xcelsior.lv/thumbs/kolekcijas/publiskai-telpai/mebeles/tom-dixon/e76e2922b74623a23461d1c76db43364-564x564.jpg" alt="Alternate Text"/>
+        </a>
+
+    </div>
+
+</section>

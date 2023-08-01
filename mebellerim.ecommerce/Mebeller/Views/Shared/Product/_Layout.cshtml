@@ -1,0 +1,146 @@
+﻿ @using Mebeller.Models.Media @using Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mebellerim</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Stylesheets -->
+    <link rel="icon" href="favicon.ico">
+    <partial name="Components/Layout/_Styles"/>
+    <link rel="stylesheet" href="/css/favorites.css"/>
+    <link rel="stylesheet" href="/css/Products/style.css"/>
+    
+    @await RenderSectionAsync("Styles", false)
+</head>
+
+<body>
+<div class="page-loader"></div>
+<div class="wrapper">
+    <nav class="navbar-fixed">
+        <div class="container">
+           
+            <!-- Top navigation -->
+            <partial name="Components/Layout/_TopNavigation"/>
+
+            <!-- ==========  Main navigation ========== -->
+
+            <partial name="Components/Layout/_MainNavigation"/>
+            
+            <!-- ========== Login wrapper ========== -->
+
+            <partial name="Product/_LoginWrapper"/>
+            
+            <!-- ==========  Cart wrapper ========== -->
+            
+            <div class="cart-wrapper">
+                @if (Model?.Orders?.OrdersDetails?.Count is > 0)
+                {
+                    @if (ViewData["Message"] != null)
+                    {
+                        <div class="alert alert-info rounded-0" role="alert">
+                            @ViewData["Message"]
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var orderDetails in Model.Orders.OrdersDetails)
+                                {
+                                    var product = orderDetails.Product;
+                                    var productPrice = product?.ProductPrice ?? 0;
+                                    var productImagePath = product != null && product.Images.Count > 0 ? $"/img/{product.Images.FirstOrDefault()?.ImagePath}" : Image.DefaultImagePath;
+                                    <tr>
+                                        <td>
+                                            <div class="media align-items-center">
+                                                <img class="shopping-cart-images thumbnail" src="@productImagePath" alt="Product Image">
+                                                <div class="media-body ml-2">
+                                                    <h6 class="text-dark font-weight-bold" style="font-size: 14px">@product?.ProductName</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="media align-items-center">
+                                                <div class="input-group product-count">
+                                                    <input type="hidden" value="@orderDetails.Product.ProductQuantityInStock" />
+                                                    <input readonly id="sst" value="@orderDetails.OrderDetailsQuantity" class="form-control input-text qty order-details-quantities" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="media align-items-center">
+                                                <div class="title">@((productPrice != 0) ? $"{productPrice:C}" : "Free")</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-cart-wrapper">
+                        <div class="empty-cart-icon">
+                            <i class="fa fa-shopping-cart"></i>
+                        </div>
+                        <div class="empty-cart-message">
+                            <h5>Your cart is empty</h5>
+                        </div>
+                    </div>
+                }
+            
+                <div class="clearfix">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <a asp-action="Index" asp-controller="Product" class="btn btn-clean-dark">
+                                <i class="fa fa-chevron-left"></i> Check products
+                            </a>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <form id="proceed-to-checkout-form" asp-action="ProceedToCheckout">
+                                <button type="button" class="btn btn-primary border-0 proceed-to-checkout-button"><i class="fa fa-shopping-cart"></i> Proceed to checkout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==========  Search wrapper ========== -->
+
+            <div class="search-wrapper">
+
+                <form asp-action="Index" asp-controller="Product">
+                    <input class="form-control" placeholder="Search..."/>
+                    <button class="btn btn-main" type="submit">Go!</button>
+                </form>
+
+            </div>
+        </div>
+    </nav>
+
+    <main>@RenderBody()</main>
+
+    <!-- Footer -->
+    <partial name="Components/Layout/_Footer"/>
+</div>
+
+<!-- JavaScript -->
+<partial name="Components/Layout/_Scripts"/>
+
+@await RenderSectionAsync("Scripts", false)
+</body>
+</html>

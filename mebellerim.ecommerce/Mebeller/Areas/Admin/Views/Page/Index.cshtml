@@ -1,0 +1,113 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<Mebeller.Models.Media.Page>
+
+@{
+    ViewData["Title"] = "Pages";
+}
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <div class="h2 mt-3">
+                        <a class="btn btn-warning float-left" asp-controller="Page" asp-action="CreatePage">Add</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i class="bi bi-house"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Page</li>
+                    <li class="breadcrumb-item active">Page list</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+<form asp-action="Index" method="get">
+    <div class="input-group mb-4">
+        <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="..." aria-label="...">
+        <button type="submit" class="input-group-text" id="search-textbox">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</form>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            @if (!Convert.ToBoolean(ViewData["isEmpty"]))
+            {
+                <table class="table table-responsive-sm table-striped table-bordered text-center table-light">
+                    <thead>
+                        <tr>
+                            <th class="cart-item-cells">Page title</th>
+                            <th class="cart-item-cells">Path address</th>
+                            <th class="cart-item-cells">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var aPage in Model)
+                        {
+                            <tr>
+                                <td class="cart-item-cells align-middle">@aPage.PageTitle</td>
+                                <td class="cart-item-cells align-middle">@aPage.PagePathAddress</td>
+                                <td class="align-middle">
+                                    <div class="admin-products-actions">
+                                        <a href="/@aPage.PagePathAddress" target="_blank">
+                                            <i class="bi bi-eye-fill"></i> View
+                                        </a>
+                                        <a asp-action="EditPage" asp-route-pageId="@aPage.PageId">
+                                            <i class="bi bi-pencil-fill"></i> Edit
+                                        </a>
+                                        <a type="button" data-toggle="modal" data-target="#deletemodal@(aPage.PageId)">
+                                            <i class="bi bi-trash-fill"></i> Delete
+                                        </a>
+                                        <div class="modal fade" id="deletemodal@(aPage.PageId)" tabindex="-1" role="dialog" aria-labelledby="#deletemodal@(aPage.PageId)" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header justify-content-center">
+                                                        <h5 class="modal-title text-center" id="deletemodalLabel">Delete</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h1 class="text-info">
+                                                            <i class="bi bi-x"></i>
+                                                        </h1>
+                                                        <p class="lead">Deleting <span class="text-warning">@aPage.PageTitle</span> Are you sure?</p>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-center">
+                                                        <a type="button" class="btn btn-danger" asp-action="DeletePage" asp-route-pageId="@aPage.PageId">Delete</a>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @await Html.PartialAsync("PartialPaging", "Index")
+            }
+            else
+            {
+                <div class="text-center">
+                    <h2>No pages found</h2>
+                    <p>There are currently no pages available to display.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

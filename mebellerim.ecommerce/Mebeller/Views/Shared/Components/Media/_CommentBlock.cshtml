@@ -1,0 +1,40 @@
+﻿@using Mebeller.Data.Utilities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.Media.Comment
+
+<div class="comment-user">
+    <div><img src="/img/user-2.jpg" alt="Alternate Text" width="70"/></div>
+    <div>
+        <h5>
+            <span>@Model.User?.UserName</span>
+            <small>@Model.SubmitTime.ToSolarWithTime()</small>
+        </h5>
+    </div>
+</div>
+<div class="comment-desc">
+    <p>@Model.CommentDescription</p>
+</div>
+<div class="text-right mt-2 ">
+    @if (User.Identity is {IsAuthenticated: true })
+    {
+        var isAdmin = User.IsInRole("Admin");
+        var isUserComment = Model.User?.UserName == User.Identity.Name;
+        if (isAdmin || isUserComment)
+        {
+            <form method="post" action="@Url.Action("DeleteComment", "Media")" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                <input type="hidden" name="commentId" value="@Model.CommentId" />
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger btn-xs">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </form>
+        }
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#replyForm-@Model.CommentId">
+            <span class="glyphicon glyphicon-comment"></span> Reply
+        </button>
+    }
+</div>
+@if (Model.Replies?.Any() == true)
+{
+@await Html.PartialAsync("Components/Media/_CommentReplies", Model.Replies)
+}

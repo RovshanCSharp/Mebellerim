@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model string
+
+<style>
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .pagination {
+        list-style: none;
+        display: flex;
+        padding: 0;
+    }
+    
+    .pagination li {
+        margin: 0 5px;
+    }
+    
+    .pagination li a {
+        text-decoration: none;
+        color: #333;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+    
+    .pagination li.active a {
+        background-color: #007bff;
+        color: #fff;
+    }
+    
+    .pagination li.disabled a {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="pagination-wrapper">
+    <ul class="pagination">
+        <li class="page-item @(ViewData["pageNumber"]?.ToString()==ViewData["firstPage"]?.ToString() ? "disabled" : "")">
+            <a class="page-link" asp-action="@Model" asp-route-pageNumber="@ViewData["firstPage"]" asp-route-search="@ViewData["search"]" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        
+        @for (var i = Convert.ToInt32(ViewData["firstPage"]); i <= Convert.ToInt32(ViewData["lastPage"]); i++)
+        {
+            <li class="page-item @(i.ToString()==ViewData["pageNumber"]?.ToString() ? "active" : "")">
+                <a class="page-link" asp-action="@Model" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
+            </li>
+        }
+        
+        <li class="page-item @(ViewData["pageNumber"]?.ToString()==ViewData["lastPage"]?.ToString() ? "disabled" : "")">
+            <a class="page-link" asp-action="@Model" asp-route-pageNumber="@ViewData["lastPage"]" asp-route-search="@ViewData["search"]" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,105 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Mebeller.Data.Utilities
+@model IEnumerable<Mebeller.Models.Media.Comment>
+
+@{
+    ViewData["Title"] = "Comments";
+}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="h2 mt-3">
+                    <h1 class="h2 d-inline">Comments</h1>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Comments</li>
+                    <li class="breadcrumb-item ">Comment details</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<form action="@Url.Action("Comments")" method="get">
+    <div class="input-group mb-3">
+        <input type="text" name="search" class="form-control" value="@ViewData["search"]" placeholder="Search..." aria-label="Search">
+        <button class="btn btn-outline-secondary" type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+</form>
+
+@if (!Convert.ToBoolean(ViewData["isEmpty"]))
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-light text-center">
+            <thead>
+            <tr>
+                <th class="cart-item-cells">Authors</th>
+                <th class="cart-item-cells">View</th>
+                <th class="cart-item-cells">In response to</th>
+                <th class="cart-item-cells">Posted in</th>
+                <th class="cart-item-cells">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var comment in Model)
+            {
+                <tr class="@(comment.IsRead==false?"isunread":"") commentsTrBottomBorders">
+                    <td class="align-middle">
+                        <a href="@Url.Action("UserDetails", "User", new { userId = comment.User.Id })" class="text-dark">@comment.User.UserName</a>
+                    </td>
+                               
+                    <td class="align-middle py-3">
+                        @if (comment.ParentComment != null)
+                        {
+                            <div class="mb-2">
+                                <span class="text-muted">In response to</span>
+                                <a class="text-dark" href="@Url.Action("UserDetails", "User", new { userId = comment.ParentComment.User.Id })">@comment.ParentComment.User.UserName</a>
+                            </div>
+                        }
+                        <div>@comment.CommentDescription</div>
+                    </td>
+                    <td class="cart-item-cells align-middle">
+                        <a class="text-success" href="@Url.Action("EditProduct", "Product", new { productId = comment.Product.ProductId })">@comment.Product.ProductName</a>
+                        <hr class="my-2">
+                        <a class="text-success" href="/Products/@comment.Product.ProductId">Show Product</a>
+                    </td>
+                    <td class="align-middle">@comment.SubmitTime.ToSolarWithTime()</td>
+                    <td class="align-middle">
+                        <div class="admin-products-actions">
+                            @if (!comment.IsConfirmed)
+                            {
+                                <a class="btn btn-danger text-light mx-3" asp-action="ConfirmComment" asp-route-commentId="@comment.CommentId">Accept</a>
+                            }
+                            <a asp-action="CommentDetails" asp-route-commentId="@comment.CommentId">
+                                 <span data-feather="edit">Show</span>
+                            </a>
+                        </div>
+                    </td>
+           
+                </tr>
+            }
+            </tbody>
+        </table>
+        @await Html.PartialAsync("PartialPaging", "Comments")
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h2>No comments found</h2>
+        <p>There are currently no comment available to display.</p>
+    </div>
+}

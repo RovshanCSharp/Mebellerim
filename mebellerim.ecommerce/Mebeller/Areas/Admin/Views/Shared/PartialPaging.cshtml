@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model string
+<nav class="mt-2 mb-5">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(ViewData["pageNumber"]?.ToString() == ViewData["firstPage"]?.ToString() ? "disabled" : "")">
+            <a class="page-link" asp-action="@Model" asp-route-pageNumber="@ViewData["firstPage"]" asp-route-search="@ViewData["search"]">First</a>
+        </li>
+        @for (var i = Convert.ToInt32(ViewData["firstPage"]); i <= Convert.ToInt32(ViewData["lastPage"]); i++)
+        {
+            <li class="page-item @(ViewData["pageNumber"]?.ToString() == i.ToString() ? "active" : "")">
+                <a class="page-link" asp-action="@Model" asp-route-pageNumber="@i" asp-route-search="@ViewData["search"]">@i</a>
+            </li>
+        }
+        <li class="page-item @(ViewData["pageNumber"]?.ToString() == ViewData["lastPage"]?.ToString() ? "disabled" : "")">
+            <a class="page-link" asp-action="@Model" asp-route-pageNumber="@ViewData["lastPage"]" asp-route-search="@ViewData["search"]">End</a>
+        </li>
+    </ul>
+</nav>

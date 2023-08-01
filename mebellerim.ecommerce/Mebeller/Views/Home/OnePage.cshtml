@@ -1,0 +1,129 @@
+﻿@using Mebeller.Models.Media
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.FullScreenViewModel
+
+@{
+    Layout = "Home/_LayoutFullScreen";
+}
+
+<section id="page-products" class="products">
+    <div class="container">
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Our products</h2>
+                    <div class="text">
+                        <p>Check out our latest collections</p>
+                    </div>
+       
+                    <!-- === box filters === -->
+       
+                    
+                    <div id="box-filters" class="box-filters">
+       
+                        <figure data-filter=".sofa">
+                            <figcaption>
+                                <i class="f-icon f-icon-sofa"></i>
+                                <span>Sofa</span>
+                            </figcaption>
+                        </figure>
+       
+                        <figure data-filter=".armchair">
+                            <figcaption>
+                                <i class="f-icon f-icon-armchair"></i>
+                                <span>Armchair</span>
+                            </figcaption>
+                        </figure>
+       
+                        <figure data-filter=".chair">
+                            <figcaption>
+                                <i class="f-icon f-icon-chair"></i>
+                                <span>Chair</span>
+                            </figcaption>
+                        </figure>
+       
+                        <figure data-filter=".bedroom">
+                            <figcaption>
+                                <i class="f-icon f-icon-bedroom"></i>
+                                <span>Beds</span>
+                            </figcaption>
+                        </figure>
+                    </div> 
+                </div>
+            </div> 
+        </header>
+
+        <div id="box-filters-results" class="row">
+            @foreach (var product in Model.Products)
+            {
+                var simpleProductPriceLabel = product.ProductPrice != 0 && product.ProductQuantityInStock != 0 ? $"{product.ProductPrice:C} " : product.ProductPrice == 0 && product.ProductQuantityInStock > 0 ? "0.00" : "";
+                var quickViewId = $"quickview-{product.ProductId}";
+                var productImagePath = product.Images.Any() ? $"/img/{product.Images.FirstOrDefault()?.ImagePath}" : Image.DefaultImagePath;
+                var categories = string.Join(" ", product.Categories.Select(c => c.CategoryName.ToLowerInvariant()));
+
+                <div class="col-xs-6 col-sm-4 item @(categories)">
+                    <article>
+                        <div class="figure-grid">
+                            <div class="image">
+                                <a href="#@quickViewId" class="mfp-open">
+                                    <img src="@productImagePath" alt="" width="360" />
+                                </a>
+                            </div>
+                            <div class="text">
+                                <h2 class="title h4">
+                                    <a asp-controller="Product" asp-action="ProductDetails" asp-route-productId="@product.ProductId">@product.ProductName</a>
+                                </h2>
+                                <sup>@simpleProductPriceLabel</sup>
+                                <span class="description clearfix">@product.ProductDescription</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="popup-main mfp-hide" id="@quickViewId">
+                    <div class="product">
+                        <div class="popup-title">
+                            <div class="h1 title">@product.ProductName
+                                @if (product.Categories.Any())
+                                {
+                                    <small>@product.Categories.First().CategoryName</small>
+                                }
+                                else
+                                {
+                                    <small>Category : NA</small>
+                                }
+                            </div>
+                        </div>
+
+                        @if (product.Images.Any())
+                        {
+                            <div class="owl-product-gallery">
+                                @foreach (var image in product.Images)
+                                {
+                                    <img src="/img/@(image.ImagePath)" alt="" />
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="owl-product-gallery">
+                                <img src="/img/product-1.png" alt="" width="640" />
+                                <img src="/img/product-2.png" alt="" width="640" />
+                                <img src="/img/product-3.png" alt="" width="640" />
+                                <img src="/img/product-4.png" alt="" width="640" />
+                            </div>
+                        }
+
+                        <div class="popup-table">
+                            <div class="popup-cell">
+                                <div class="price price-single">
+                                    <span class="h3">@product.ProductPrice.ToString("C")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

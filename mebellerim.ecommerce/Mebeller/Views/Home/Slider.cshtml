@@ -1,0 +1,664 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Home.IndexViewModel
+
+@{
+    var doesModelHasAnyProduct = Model.Products.Any();
+    var primaryBanners = Model.Banners.Where(p => p.IsPrimary);
+    var primary = primaryBanners.ToList();
+}
+
+<style>
+    .subscribe-position {
+        background-color: #f8f8f8;
+        padding: 40px 0;
+    }
+    
+    .subscribe__title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .text-secondary {
+        color: #888;
+        font-size: 16px;
+    }
+    
+    .subscribe-form input {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .subscribe-form-button {
+        padding: 10px 30px;
+    }
+    
+    .success-message,
+    .error-message {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+</style>
+ 
+<!-- ========================  Header content ======================== -->
+<section class="header-content">
+
+    @if (!primary.Any())
+    {
+        <div class="owl-slider owl-slider-fullscreen">
+
+            <!-- === slide item === -->
+          
+            <div class="item" style="background-image:url(img/gallery-1.jpg)">
+                <div class="box">
+                    <div class="container">
+                        <h2 class="title animated h1" data-animation="fadeInDown">My Furniture</h2>
+                        <div class="animated" data-animation="fadeInUp">
+                            Modern furniture <br/> Everything you need
+                        </div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="#" target="_blank" class="btn btn-main"><i class="icon icon-cart"></i> Shop now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+            <!-- === slide item === -->
+          
+            <div class="item" style="background-image:url(img/gallery-2.jpg)">
+                <div class="box">
+                    <div class="container">
+                        <h2 class="title animated h1" data-animation="fadeInDown">Furniture House</h2>
+                        <div class="animated" data-animation="fadeInUp">Unlimited Choices. Unbeatable Prices. Free Shipping.</div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="#" class="btn btn-clean">Get inspired</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+            <!-- === slide item === -->
+          
+            <div class="item" style="background-image:url(img/gallery-2.jpg)">
+                <div class="box">
+                    <div class="container">
+                        <h2 class="title animated h1" data-animation="fadeInDown">
+                            My Furniture.
+                        </h2>
+                        <div class="desc animated" data-animation="fadeInUp">
+                            Everything you need
+                        </div>
+                        <div class="desc animated" data-animation="fadeInUp">
+                            Stay tuned
+                        </div>
+                        <div class="animated" data-animation="fadeInUp">
+                            <a href="#" target="_blank" class="btn btn-clean">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="owl-slider">
+            @foreach (var banner in primary)
+            {
+                <div class="item">
+                    <div class="slider-img">
+                        <img src="/img/@banner.Image.ImagePath" alt="Slider Product">
+                    </div>
+                    <div class="box">
+                        <div class="container">
+                            <h2 class="title animated h1" data-animation="fadeInDown">@banner.Title</h2>
+                            <div class="animated" data-animation="fadeInUp">
+                                @banner.Description <br> Everything you need
+                            </div>
+                            <div class="animated" data-animation="fadeInUp">
+                                <a href="@banner.Link" target="_blank" class="btn btn-main">
+                                    <i class="icon icon-cart"></i> Shop now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>
+<!-- ========================  Icons slider ======================== -->
+
+<section class="owl-icons-wrapper owl-icons-frontpage">
+
+    <!-- === header === -->
+
+    <header class="hidden">
+        <h2>Kateqoriyalar</h2>
+    </header>
+
+    <div class="container">
+
+        <div class="owl-icons">
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=6">
+                <figure>
+                    <i class="f-icon f-icon-sofa"></i>
+                    <figcaption>Divanlar</figcaption>
+                </figure>
+            </a>
+            
+            
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=7">
+                <figure>
+                    <i class="f-icon f-icon-table"></i>
+                    <figcaption>Stol stul</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=11">
+                <figure>
+                    <i class="f-icon f-icon-bookcase"></i>
+                    <figcaption>Kitab rəfləri</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=3">
+                <figure>
+                    <i class="f-icon f-icon-bedroom"></i>
+                    <figcaption>Yataq otağı mebelleri</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=12">
+                <figure>
+                    <i class="f-icon f-icon-children-room"></i>
+                    <figcaption>Uşaq otağı</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=2">
+                <figure>
+                    <i class="f-icon f-icon-kitchen"></i>
+                    <figcaption>Mətbəx mebelləri</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=13">
+                <figure>
+                    <i class="f-icon f-icon-bathroom"></i>
+                    <figcaption>Hamam üçün</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=5">
+                <figure>
+                    <i class="f-icon f-icon-wardrobe"></i>
+                    <figcaption>Dolablar</figcaption>
+                </figure>
+            </a>
+            
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=1">
+                <figure>
+                    <i class="f-icon f-icon-office"></i>
+                    <figcaption>Ofis mebelleri</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=10">
+                <figure>
+                    <i class="f-icon f-icon-lightning"></i>
+                    <figcaption>Lightning</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=14">
+                <figure>
+                    <i class="f-icon f-icon-carpet"></i>
+                    <figcaption>Xalçalar</figcaption>
+                </figure>
+            </a>
+
+            <!-- === icon item === -->
+
+            <a href="/Products?SelectedCategories=10">
+                <figure>
+                    <i class="f-icon f-icon-accessories"></i>
+                    <figcaption>Digərləri</figcaption>
+                </figure>
+            </a>
+
+        </div> 
+    </div>
+</section>
+
+<!-- ========================  Products ======================== -->
+
+<section class="products">
+
+    <div class="container">
+
+        <!-- === header title === -->
+
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Popular products</h2>
+                    <div class="text">
+                        <p>Check out our latest collections</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @if (doesModelHasAnyProduct)
+        {
+            <div class="row">
+                @{
+                    await Html.RenderPartialAsync("Components/Products/PartialShowPopularProducts", Model.Products);
+                }
+            </div>
+        }
+
+        <div class="wrapper-more">
+            <a href="/Products" class="btn btn-main">View store</a>
+        </div>
+
+    </div> 
+</section>
+
+<!-- ========================  Stretcher widget ======================== -->
+
+<section class="stretcher-wrapper">
+
+    <!-- === stretcher header === -->
+
+    <header class="hidden">
+        <!--remove class 'hidden'' to show section header -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h1 class="h2 title">Popular categories</h1>
+                    <div class="text">
+                        <p>
+                            Whether you are changing your home, or moving into a new one, you will find a huge selection of quality living room furniture,
+                            bedroom furniture, dining room furniture and the best value at Furniture factory
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- === stretcher === -->
+
+    <ul class="stretcher">
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-1.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-bedroom"></span>
+                    <span class="text-intro">Bedroom</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Modern furnishing projects</h4>
+                <figcaption>New furnishing ideas</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="/Blog">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-2.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-sofa"></span>
+                    <span class="text-intro">Living room</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Furnishing and complements</h4>
+                <figcaption>Discover the design table collection</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="#">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-2.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-office"></span>
+                    <span class="text-intro">Office</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Which is Best for Your Home</h4>
+                <figcaption>Wardrobes vs Walk-In Closets</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="#">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item === -->
+
+        <li class="stretcher-item" style="background-image:url(img/gallery-4.jpg);">
+            <!--logo-item-->
+            <div class="stretcher-logo">
+                <div class="text">
+                    <span class="f-icon f-icon-bathroom"></span>
+                    <span class="text-intro">Bathroom</span>
+                </div>
+            </div>
+            <!--main text-->
+            <figure>
+                <h4>Keeping Things Minimal</h4>
+                <figcaption>Creating Your Very Own Bathroom</figcaption>
+            </figure>
+            <!--anchor-->
+            <a href="#">Anchor link</a>
+        </li>
+
+        <!-- === stretcher item more=== -->
+
+        <li class="stretcher-item more">
+            <div class="more-icon">
+                <span data-title-show="Show more" data-title-hide="+"></span>
+            </div>
+            <a href="/Categories" title="show more"></a>
+        </li>
+
+    </ul>
+</section>
+
+<!-- ========================  Blog Block ======================== -->
+
+<section class="blog blog-block" style="background-image: url(img/blog-2.jpg)">
+
+    <div class="container">
+
+        <!-- === blog header === -->
+
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="title">Interior ideas</h2>
+                    <div class="text">
+                        <p>Keeping things minimal</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="row">
+            @if(Model.BlogPosts != null)
+            {
+                @foreach (var blogPost in Model.BlogPosts)
+                {
+                    <div class="col-sm-4">
+                        <article>
+                            <a href="/blog/@blogPost.UrlHandle">
+                                <div class="image">
+                                    <img src="@blogPost.FeaturedImageUrl" alt=""/>
+                                </div>
+                                <div class="entry entry-block">
+                                    <div class="date">
+                                        <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                        <strong>@blogPost.PublishedDate.Day</strong>
+                                        <span>@blogPost.PublishedDate.Year</span>
+                                    </div>
+                                    <div class="title">
+                                        <h2 class="h3">@blogPost.PageTitle</h2>
+                                    </div>
+                                    <div class="description">
+                                        <p>@blogPost.ShortDescription</p>
+                                    </div>
+                                </div>
+                                <div class="show-more">
+                                    <span class="btn btn-main btn-block">Read more</span>
+                                </div>
+                            </a>
+                        </article>
+                    </div>
+                }
+            }
+        </div>
+        
+        <!-- === button more === -->
+
+        <div class="wrapper-more">
+            <a href="/Blog" class="btn btn-main">View all posts</a>
+        </div>
+
+    </div> <!--/container-->
+</section>
+
+<!-- ========================  Banner ======================== -->
+
+<section class="banner" style="background-image:url(img/gallery-4.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8 text-center">
+                <h2 class="title">Our story</h2>
+                <p>
+                    We believe in creativity as one of the major forces of progress. With this idea, we traveled throughout Italy to find exceptional
+                    artisans and bring their unique handcrafted objects to connoisseurs everywhere.
+                </p>
+                <p>
+                    <a href="#" class="btn btn-clean">Read full story</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================  Blog ======================== -->
+<section class="blog" style="background-image: url(img/blog-2.jpg)">
+    <div class="container">
+        <!-- === blog header === -->
+        <header>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h1 class="h2 title">Blog</h1>
+                    <div class="text">
+                        <p>Latest news from the blog</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="row">
+            @if (Model.BlogPosts != null)
+            {
+                foreach (var blogPost in Model.BlogPosts)
+                {
+                    <div class="col-sm-4">
+                        <article>
+                            <a href="/blog/@blogPost.UrlHandle">
+                                <div class="image" style="background-image:url(@blogPost.FeaturedImageUrl)">
+                                    <img src="#" alt="" />
+                                </div>
+                                <div class="entry entry-table">
+                                    <div class="date-wrapper">
+                                        <div class="date">
+                                            <span>@blogPost.PublishedDate.ToString("MMM")</span>
+                                            <strong>@blogPost.PublishedDate.Day</strong>
+                                            <span>@blogPost.PublishedDate.Year</span>
+                                        </div>                                   
+                                    </div>
+                                    <div class="title">
+                                        <h2 class="h5">@blogPost.PageTitle</h2>
+                                    </div>
+                                </div>
+                                <div class="show-more">
+                                    <span class="btn btn-main btn-block">Read more</span>
+                                </div>
+                            </a>
+                        </article>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- === button more === -->
+        <div class="wrapper-more">
+            <a href="/Blog" class="btn btn-main">View all posts</a>
+        </div>
+    </div> <!--/container-->
+</section>
+
+<!-- ======================== Subscribe ==================== -->
+
+<section class="subscribe-position" style="background-image: url('img/blog-2.jpg');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="subscribe text-center">
+                    <h3 class="subscribe__title">Stay up-to-date wherever you are</h3>
+                    <p class="text-secondary">Subscribe to our newsletter</p>
+                    <div id="mc_embed_signup">
+                        <form method="post" data-ajax="true" data-ajax-method="post" data-ajax-url="@Url.Action("AddNewsletter","Media")" data-ajax-complete="completed" class="subscribe-form form-inline mt-5 pt-1">
+                            <div class="form-group">
+                                <input class="form-control mb-1" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your email'" name="customerEmail">
+                            </div>
+                            <button class="btn btn-primary mb-1 subscribe-form-button" type="submit">Submit</button>
+                        </form>
+                        <div class="success-message text-success mt-3" style="display: none"></div>
+                        <div class="error-message text-danger mt-3" style="display: none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================  Instagram ======================== -->
+<section class="instagram">
+
+    <!-- === instagram header === -->
+
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8 text-center">
+                    <h2 class="h2 title">Follow us <i class="fa fa-instagram fa-2x"></i> Instagram </h2>
+                    <div class="text">
+                        <p>Mebellerim</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- === instagram gallery === -->
+
+    <div class="gallery clearfix">
+        <a class="item" href="#">
+            <img src="https://images.offerup.com/HBTXIkk2fDFF1B9uSj9S6Xi-0jM=/565x565/482f/482f1d365606420798b8d79db07556c2.jpg" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://www.buyerfox.com/image/cache/catalog/5d3a7a3deedb057fe80124f64e54c7df-550x550.jpg" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://housing.com/news/wp-content/uploads/2022/11/image17-4.png" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://rowicohome.com/globalassets/miljobilder-mobler/bord/matbord/skye-matbord-reily-stol-564x564.jpg?width=600&quality=80" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://housing.com/news/wp-content/uploads/2022/11/image1-125.png" alt="Alternate Text"/>
+        </a>
+        <a class="item" href="#">
+            <img src="https://www.xcelsior.lv/thumbs/kolekcijas/publiskai-telpai/mebeles/tom-dixon/e76e2922b74623a23461d1c76db43364-564x564.jpg" alt="Alternate Text"/>
+        </a>
+
+    </div>
+
+</section>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/5.0.0/imagesloaded.pkgd.min.js" integrity="sha512-kfs3Dt9u9YcOiIt4rNcPUzdyNNO9sVGQPiZsub7ywg6lRW5KuK1m145ImrFHe3LMWXHndoKo2YRXWy8rnOcSKg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+    const subscribe = $(".subscribe-form input")
+    const error = $(".error-message")
+    const success =  $(".success-message")
+    
+        completed = function (xhr) {
+            if (xhr.responseText === "Successful") {
+               subscribe.val("");
+               error.hide();
+               success.text("Your email has been successfully registered");
+               success.show();
+            }
+            else if (xhr.responseText === "EmptyError") {
+                subscribe.val("");
+                success.hide();
+                error.text("Please enter your email");
+                error.show();
+            }
+            else if (xhr.responseText === "InvalidEmail") {
+                subscribe.val("");
+                success.hide();
+                error.text("The email is not valid");
+                error.show();
+            }
+            else if (xhr.responseText === "CustomerEmailExist") {
+                subscribe.val("");
+                success.hide();
+                error.text("Email already registered");
+                error.show();
+            }
+            else if (xhr.responseText === "MoreThan256Character") {
+               subscribe.val("");
+               success.hide();
+                error.text("Up to 256 characters are allowed");
+                error.show();
+            }
+            else if (xhr.responseText === "Failed") {
+                subscribe.val("");
+                success.hide();
+                error.text("A problem occurred while registering an email");
+                error.show();
+            }
+            $("input[name=__RequestVerificationToken]").remove();
+            $(".subscribe-form").append('@Html.AntiForgeryToken()');
+        };
+    </script>
+}

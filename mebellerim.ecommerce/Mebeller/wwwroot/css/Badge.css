@@ -1,0 +1,32 @@
+﻿.badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    padding: 0.5rem 0.75rem;
+    text-transform: uppercase;
+}
+.badge-primary {
+    background-color: #007bff;
+}
+.badge-discount {
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #dc3545;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.thumbnail {
+    width: 150px; /* Adjust the width as needed */
+    height: auto;
+}
+td .text-center div {
+    text-align: center;
+}
+.quantity input {
+    width: 60px;
+}
+.media form {  display: inline-block; /* or flex */
+    margin-right: 10px; /* optional */
+}

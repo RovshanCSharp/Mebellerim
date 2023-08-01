@@ -1,0 +1,105 @@
+/* login box area */
+.login-box-area {
+    padding: 60px 0;
+}
+
+/* login box image */
+.login-box-img {
+    position: relative;
+    height: 500px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/5087/5087579.png');
+    background-size: cover;
+}
+
+/* login box image hover */
+.login-box-img .hover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* login box image hover h4 */
+.login-box-img .hover h4 {
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* login box image hover buttons */
+.login-box-img .hover a.button-account {
+    background-color: #fff;
+    color: #333;
+    border-radius: 30px;
+    padding: 15px 30px;
+    margin-right: 10px;
+}
+
+.login-box-img .hover a.button-account:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* login form inner */
+.login-form-inner {
+    padding: 40px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+/* register form inner */
+.register-form-inner h3 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+/* login form */
+.login-form {
+    margin-top: 30px;
+}
+
+/* login form input */
+.login-form input {
+    padding: 15px;
+    border: none;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* login form button */
+.login-form button.button-register {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    margin-top: 30px;
+}
+
+.login-form button.button-register:hover {
+    background-color: #fff;
+    color: #333;
+}
+
+/* alert */
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.alert.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.alert.alert-danger {
+    background-color: #f2dede;
+    color: #a94442;
+}

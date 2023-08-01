@@ -1,0 +1,579 @@
+﻿@using Mebeller.Data.Services.Interfaces
+@using Mebeller.Data.Utilities
+@using Mebeller.Models.Media
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Configuration
+@model Mebeller.Models.ViewModels.Product.ProductsViewModel
+@inject IAccountService AccountService
+@inject IConfiguration Configuration
+
+@{
+    var isUserSignedIn = AccountService.IsUserSignedIn();
+    var isProductInformationNotNull = Model?.Product?.Informations != null && Model.Product.Informations.Any();
+    var discountAmount = Model?.Product?.ProductDiscount?.FirstOrDefault()?.Amount ?? 0;
+    var totalPrice = Model?.Product?.ProductPrice - discountAmount * Model?.Product?.ProductPrice;
+    var formattedPrice = totalPrice?.ToString("C");
+    
+    Layout = "Product/_Layout";
+}
+
+<style>
+    .product-flex-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .product-flex-info > * {
+        flex-basis: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .title {
+        margin-bottom: 0;
+    }
+    
+    .price {
+        font-size: 24px;
+    }
+    
+    .info-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .info-box span {
+        display: block;
+    }
+    
+    .info-box-addto {
+        background-color: #f5f5f5;
+    }
+    
+    .fa-heart {
+        margin-right: 5px;
+    }
+    
+    .popup-buttons a {
+        display: flex; 
+        align-items: center; 
+        margin-right: 10px;
+    }
+    
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+      .alert {
+            margin-bottom: 10px;
+        }
+    
+        .table-responsive {
+            margin-bottom: 15px;
+        }
+    
+        .table th {
+            font-weight: bold;
+        }
+    
+        .title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    
+        .empty-cart-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 50px;
+        }
+    
+        .empty-cart-icon {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+    
+        .empty-cart-message {
+            text-align: center;
+        }
+    
+        </style>
+
+<!-- ========================  Main header ======================== -->
+
+<section class="main-header" style="background-image:url(img/gallery-2.jpg)">
+    <header>
+        <div class="container">
+            <h1 class="h2 title"></h1>
+            <ol class="breadcrumb breadcrumb-inverted">
+                <li>
+                    <a href="/">
+                        <span class="icon icon-home"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/Categories">Product Category</a>
+                </li>
+                 
+                <li>
+                    <a class="active" href="#">Product overview</a>
+                </li>
+            </ol>
+        </div>
+    </header>
+</section>
+
+<!-- ========================  Product ======================== -->
+
+@if (Model?.Product != null)
+{
+    <section class="product">
+    <div class="main">
+        <div class="container">
+            <div class="row product-flex">
+                <div class="col-md-4 col-sm-12 product-flex-info">
+                    <div class="clearfix">
+                        <h1 class="title">
+                            @Model.Product.ProductName
+                            @if (Model.Product.Categories?.Any() == true)
+                            {
+                                <small>@string.Join(", ", Model.Product.Categories.Select(c => c.CategoryName))</small>
+                            }
+                        </h1>
+
+                        <div class="clearfix">
+                            <div class="price">
+                                <span class="h3">
+                                    <div class="price">
+                                        <h2 class="price">
+                                            @formattedPrice
+                                        </h2>
+                                    </div>
+
+                                </span>
+                            </div>
+
+                            <!-- === info-box === -->
+
+                            <div class="info-box">
+                                <span>
+                                    <strong>Description</strong>
+                                </span>
+                                <span>@Model.Product.ProductDescription</span>
+                            </div>
+
+                            <div class="info-box">
+                                <span>
+                                    <strong>Category</strong>
+                                </span>
+                                @if (Model.Product.Categories != null && Model.Product != null && Model.Product.Categories.Any())
+                                {
+                                    <span> @Model.Product.Categories.First().CategoryName</span>
+                                }
+                                else
+                                {
+                                    <span>Category: N/A</span>
+                                }
+                            </div>
+
+                            <div class="info-box info-box-addto added">
+                                <span>
+                                    <strong>Favorites</strong>
+                                </span>
+
+                                @if (isUserSignedIn)
+                                {
+                                    var isFavorite = await AccountService.IsProductInLoggedUserFavoriteProductsAsync(Model.Product.ProductId);
+                                    var actionName = isFavorite ? "RemoveProductFromUserFavoriteProducts" : "AddProductToUserFavoriteProducts";
+
+                                    <a asp-action="@actionName"
+                                       asp-route-favoriteProductId="@Model.Product.ProductId"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="@(!isFavorite ? "Add to Favorites" : "Remove from Favorites")">
+                                        <i class="fa @(isFavorite ? "fa-heart" : "fa-heart-o")"></i> @(isFavorite ? "Remove from favorites" : "Add to favorites")
+                                    </a>
+                                }
+                                else
+                                {
+                                    var returnUrl = Url.Action("ProductDetails", "Product", new { productId = Model.Product.ProductId });
+                                    <a class="card_area icon_btn d-flex align-items-center" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl" data-toggle="tooltip" data-placement="top" title="Add to Favorites">
+                                        <i class="fa fa-heart"></i> Add to favorites
+                                    </a>
+                                }
+                            </div>
+
+                            <!-- === info-box === -->
+
+                            <div class="info-box">
+                                <span>
+                                    <strong>Availability</strong>
+                                </span>
+                                <span>
+                                    <i class="fa @(Model?.Product?.ProductQuantityInStock > 0 ? "fa-check-square-o" : "fa-truck")"></i>
+                                    @(Model?.Product?.ProductQuantityInStock > 0 ? "In stock" : "Out of stock")
+                                </span>
+                            </div>
+
+                            <div class="info-box">
+                                <span>
+                                    <strong>Number of views:</strong>
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye icon" viewBox="0 0 16 16">
+                                        <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm-.5-6a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5z"/>
+                                    </svg>
+                                    @Model?.Product?.ProductHits
+                                </span>
+                            </div>
+                            <div class="info-box">
+                                <span>
+                                    <strong>Number of purchases:</strong>
+                                </span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart icon" viewBox="0 0 16 16">
+                                        <path d="M0 0h1v1H0V0zm3 0h10.293l-.647 2H2.018L1.354.146A.5.5 0 0 0 .854 1H3v1H.854a.5.5 0 0 0-.5.5l1.5 7A1.5 1.5 0 0 0 3.854 11H13a1 1 0 0 0 0-2H3.293l-.146-.647L13.854 4H14V3h-1V2h1V1h-1V0H13v1H3V0zm1.854 2l-1.5 7H12.18l1.5-7H4.854z"/>
+                                    </svg>
+                                    @Model?.Product?.ProductSalesCount
+                                </span>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!-- === product item gallery === -->
+
+                <div class="col-md-8 col-sm-12 product-flex-gallery">
+
+                    <!-- === add to cart === -->
+
+                    <form id="@Model.Product.ProductId" asp-controller="Product" asp-action="AddProductToCart" method="post">
+                        <input type="hidden" value="@Model.Product.ProductId" name="productId"/>
+                        <input type="hidden" id="required-quantity" value="1" name="requestedQuantity"/>
+                        <a href="#" class="btn btn-buy" onclick="document.getElementById('@Model.Product.ProductId').submit(); return false;">
+                        </a>
+                    </form>
+
+                    <!-- === product gallery === -->
+
+                    @if (Model?.Product?.Images?.Any() == true)
+                    {
+                        <div class="owl-product-gallery open-popup-gallery">
+                            @foreach (var productImage in Model.Product.Images)
+                            {
+                                <a href="/img/@productImage.ImagePath" style="max-height: 500px;">
+                                    <img src="/img/@productImage.ImagePath" alt="Product Image" style="max-height: 500px"/>
+                                </a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="owl-product-gallery open-popup-gallery">
+                            <a href="/img/product-1.png">
+                                <img src="/img/product-1.png" alt="" height="500"/>
+                            </a>
+                            <a href="/img/product-2.png">
+                                <img src="/img/product-2.png" alt="" height="500"/>
+                            </a>
+                            <a href="/img/product-3.png">
+                                <img src="/img/product-3.png" alt="" height="500"/>
+                            </a>
+                            <a href="/img/product-4.png">
+                                <img src="/img/product-4.png" alt="" height="500"/>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- === product-info === -->
+
+    <div class="info">
+    <div class="container">
+    <div class="row">
+
+    <!-- === product-designer === -->
+
+    <div class="col-md-4">
+        <div class="designer">
+            <div class="box">
+                <div class="image">
+                    <img alt="User Photo" src="@(Model.Picture != null ? $"data:image/*;base64,{Convert.ToBase64String(Model.Picture)}" : "/img/user-1.jpg")">
+                </div>
+                <div class="name">
+                    <div class="h3 title">@Model.Product.UserName</div>
+                    <hr/>
+                    <p>
+                        <a href="mailto:@Model.Product.UserEmail">
+                            <i class="icon icon-envelope"></i> @Model.Product.UserEmail
+                        </a>
+                    </p>
+                    <p>
+                        <a href="tel:@Model.Product.UserPhoneNumber">
+                            <i class="icon icon-phone-handset">
+                            </i> +@Model.Product.UserPhoneNumber
+                        </a>
+                    </p>
+                    <p>
+                        <a href="#" class="btn btn-main btn-xs">
+                            <i class="icon icon-user"></i>
+                        </a>
+                        <a href="#" class="btn btn-main btn-xs">
+                            <i class="icon icon-printer"></i>
+                        </a>
+                        <a href="#" class="btn btn-main btn-xs">
+                            <i class="icon icon-layers"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <div class="btn btn-add">
+                <i class="icon icon-phone-handset"></i>
+            </div>
+        </div>
+    </div>
+    <!-- === nav-tabs === -->
+
+    <div class="col-md-8">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#designer" aria-controls="designer" role="tab" data-toggle="tab">
+                <i class="icon icon-user"></i>
+                <span>Wish list</span>
+            </a>
+        </li>
+        @if (isProductInformationNotNull)
+        {
+            <li role="presentation" class="@(isProductInformationNotNull ? "active" : "")">
+                <a href="#Specification" aria-controls="design" role="tab" data-toggle="tab">
+                    <i class="icon icon-sort-alpha-asc"></i>
+                    <span>Specification</span>
+                </a>
+            </li>
+        }
+        <li class="nav-item">
+            <a class="nav-link" id="rating-tab" data-toggle="tab" href="#rating" role="tab" aria-controls="rating-section">
+                <i class="icon icon-thumbs-up"></i>
+                <span>Review</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- === tab-panes === -->
+
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane active" id="designer">
+            <div class="content">
+                <!-- === Wish list === -->
+                @if (Model.Products.NotNullOrEmpty())
+                {
+                    <div class="products">
+                        <div class="row">
+                            @foreach (var product in Model.Products)
+                            {
+                                var productImagePath = product.Images.Any() ? $"/img/{product.Images.FirstOrDefault()?.ImagePath}" : Image.DefaultImagePath;
+
+                                var simpleProductPriceLabel = product.ProductPrice != 0 && product.ProductQuantityInStock != 0 ? $"{product.ProductPrice:C} " : product.ProductPrice == 0 && product.ProductQuantityInStock > 0 ? "0.00" : "";
+
+                                <div class="col-md-6 col-xs-6">
+                                    <article>
+
+                                        <div class="figure-grid">
+                                            <span class="label label-info">New</span>
+                                            <div class="image">
+                                                <a href="#" class="mfp-open">
+                                                    <img src="@productImagePath" alt="" width="640"/>
+                                                </a>
+                                            </div>
+                                            <div class="text">
+                                                <h2 class="title h4">
+                                                    <a asp-controller="Product" asp-action="ProductDetails" asp-route-productId="@product.ProductId">@product.ProductName</a>
+                                                </h2>
+                                                <sup>@simpleProductPriceLabel</sup>
+                                                <span class="description clearfix">@product.ProductDescription</span>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                else
+                {
+                    <div class="empty-cart-wrapper">
+                        <div class="empty-cart-icon">
+                            <i class="fa fa-heart"></i>
+                        </div>
+                        <div class="empty-cart-message">
+                            <h5>Your wishlist is empty</h5>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+        <!-- ============ tab #2 ============ -->
+        <div role="tabpanel" class="tab-pane" id="Specification">
+            <div class="content">
+                <div class="row">
+                    @if (isProductInformationNotNull)
+                    {
+                        <div class="col-md-4">
+                            <h3>Specifications</h3>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                    @foreach (var information in Model.Product.Informations)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <h5>@information.Name</h5>
+                                            </td>
+                                            <td>
+                                                <h5>@information.Value</h5>
+                                            </td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ tab #3 ============ -->
+
+        <div role="tabpanel" class="tab-pane" id="rating">
+            <div class="content">
+                <h3>@Model.Product.CommentCount comments</h3>
+
+                <div class="row">
+
+                    <!-- === comments === -->
+
+                    <div class="col-md-12">
+
+                        <div class="comments">
+
+                            <div class="comment-wrapper">
+                                @if (Model?.Product?.Comments?.Any() == true)
+                                {
+                                    <div class="comment-block">
+                                        @foreach (var comment in Model.Product.Comments)
+                                        {
+                                            @(await Html.PartialAsync("Components/Media/_CommentBlock", comment))
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="empty-cart-wrapper">
+                                        <div class="empty-cart-icon">
+                                            <i class="fa fa-comment"></i>
+                                        </div>
+                                        <div class="empty-cart-message">
+                                            <h5>There is no comment</h5>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- === add comment === -->
+
+                            <div class="comment-add">
+                                @if (!isUserSignedIn)
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        To write a comment, you need to
+                                        <a asp-controller="Account" asp-action="Register" class="alert-link">register</a>
+                                        or
+                                        <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("ProductDetails", new { productId = Model.Product.ProductId })" class="alert-link">log in</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="review_box">
+                                        <h4 id="commentTitle">Write comment</h4>
+                                        <form asp-controller="Media" asp-action="AddCommentToProduct" id="comment-form">
+                                            @{
+                                                TempData["productId"] = Model.Product.ProductId;
+                                            }
+                                            <div class="form-group">
+                                                <textarea class="form-control different-control w-100" id="textarea" cols="30" rows="5" style="margin-top: 0; margin-bottom: 0; height: 150px;" asp-for="CommentDescription"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="g-recaptcha" data-sitekey="@Configuration["reCAPTCHA:SiteKey"]"></div>
+                                                <span class="field-validation-error recaptcha-error" style="display: none;">Please tick I'm not a robot</span>
+                                            </div>
+                                            <div class="form-group text-center text-md-left mt-3">
+                                                <button type="submit" class="button button--active button-review">Write a comment</button>
+                                            </div>
+                                            <input type="hidden" id="parentCommentId" asp-for="ParentCommentId"/>
+                                        </form>
+                                    </div>
+                                    @if (ViewData["SuccessMessage"] != null)
+                                    {
+                                        <div class="alert alert-primary mt-4" role="alert">@ViewData["SuccessMessage"]</div>
+                                    }
+                                    @if (ViewData.ModelState.ErrorCount > 0)
+                                    {
+                                        <div asp-validation-summary="All" class="alert alert-danger mt-4" role="alert"></div>
+                                    }
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://www.google.com/recaptcha/api.js?hl=en" async defer></script>
+    <script src="~/libs/ckeditor5/build/ckeditor.js"></script>
+    <script>
+        $(function() {
+            const textArea = $("textarea");
+            
+            $("#comment-form").on("submit", function(e) {
+                if (grecaptcha.getResponse() === "") {
+                    e.preventDefault();
+                    $(".recaptcha-error").show();
+                }
+            });
+            
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            $(".reply_btn").click(function() {
+                $("#parentCommentId").val($(this).next().val());
+                document.getElementById("commentTitle").innerText = "Submit a reply";
+                let coordinateTop = textArea.offset().top - 145;
+                textArea.addClass("border border-danger rounded shadow-lg")
+                    .attr("placeholder", "Enter your reply...");
+                $("html, body").animate({ scrollTop: coordinateTop }, 1000);
+            });
+        });
+    </script>
+}

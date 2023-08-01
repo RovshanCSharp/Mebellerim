@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<Mebeller.Areas.Admin.Model.Media.Banner>
+
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                   <div class="h2 mt-3">
+                       <a class="btn btn-warning float-left" asp-controller="Media" asp-action="AddBanner">Add</a>
+                   </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a href="/Admin/">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">Banners</li>
+                    <li class="breadcrumb-item active">Banners List</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->
+
+<form asp-action="Banners" method="get">
+    <div class="input-group mb-4">
+        <input name="search" type="text" value="@ViewData["search"]" class="form-control" placeholder="..." aria-label="...">
+        <button type="submit" class="input-group-text" id="search-textbox">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+            </svg>
+        </button>
+    </div>
+</form>
+
+@if (!Convert.ToBoolean(ViewData["isEmpty"]))
+{
+    <body>
+    <div class="container-fluid">
+        <div class="row products-admin ratio_asos">
+            @foreach (var banner in Model)
+            {
+                var bannerImage =
+                    Url.Content($"~/img/{banner.Image.ImagePath}");
+
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body product-box">
+                            <div class="img-wrapper">
+                                <div class="front">
+                                    <a href="#">
+                                        <img src="@bannerImage"
+                                             class="img-fluid" alt="">
+                                    </a>
+                                    <div class="product-hover">
+                                        <ul>
+                                            <li>
+                                                <a asp-action="EditBanner" asp-route-bannerId="@banner.Id"
+                                                   class="btn" type="button" data-original-title=""
+                                                   title="">
+                                                    <span data-feather="edit"></span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a asp-action="DeleteBanner"
+                                                   asp-route-bannerId="@banner.Id"
+                                                   onclick="return confirm('Are you sure you want to delete this product?');"
+                                                   class="btn">
+                                                    <span data-feather="trash"></span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-detail">
+                                <div class="Description">
+                                    @banner.Description
+                                </div>
+                                <a href="@banner.Link">
+                                    <h6>@banner.Title</h6>
+                                </a>
+
+                                @{
+                                    var bannerType = banner.IsPrimary ? "Primary" : "Sub-banner";
+                                }
+
+                                <h4>@bannerType</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
+    
+    </body>
+    @await Html.PartialAsync("PartialPaging", "Banners");
+}
+else
+{
+    <div class="text-center">
+        <h2>No banners found.</h2>
+        <p>There are currently no banners available to display.</p>
+    </div>
+}

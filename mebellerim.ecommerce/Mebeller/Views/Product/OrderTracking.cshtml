@@ -1,0 +1,101 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Mebeller.Models.ViewModels.Product.OrderTrackingViewModel
+
+@{
+    ViewData["Title"] = "Order Tracking";
+}
+
+<section class="tracking_box_area section-margin--small">
+    <div class="container">
+        @if (Model?.Order == null)
+        {
+            <div class="tracking_box_inner">
+                <form asp-action="OrderTracking">
+                    <div class="form-group">
+                        <label for="order">Order ID</label>
+                        <input type="text" class="form-control" id="order" asp-for="OrderId" placeholder="Enter your order ID" required>
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" asp-for="Email" placeholder="Enter your email" required>
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Track Order</button>
+                    <div class="alert alert-danger mt-3 rounded-0 w-100" role="alert"></div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="container">
+                <p class="text-center text-success h5">
+                    Order #@Model.OrderId placed on @Model.Order.CreateTime is currently @Model.Order.OrderStatus.
+                </p>
+                <div class="order-details-table">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>Order Details</h2>
+                        <i class="bi bi-printer h5"></i>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Total Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var orderInvoiceDetails in Model.Order.OrderInvoicesDetails)
+                            {
+                                <tr>
+                                    <td class="py-2">
+                                        <p>@orderInvoiceDetails.InvoiceDetailsProductName</p>
+
+                                    </td>
+                                    <td class="align-middle py-2">
+                                        <h5>x <span class="middle-number d-inline-block">@orderInvoiceDetails.InvoiceDetailsQuantity.ToString("D2")</span></h5>
+                                    </td>
+                                    <td class="align-middle py-2">
+                                        <p>@(orderInvoiceDetails.InvoiceDetailsTotalPrice != 0 ? $"{orderInvoiceDetails.InvoiceDetailsTotalPrice:C} " : "Free")</p>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td colspan="3" class="pb-4"></td>
+                            </tr>
+                            @foreach (var discount in Model.Order.Discounts)
+                            {
+                                <tr>
+                                    <td>Discount Code</td>
+                                    <td>@discount.DiscountCode</td>
+                                    <td>-@discount.Amount.ToString("C")</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td class="pt-5">
+                                    <h4>Shipping</h4>
+                                </td>
+                                <td class="pt-5"></td>
+                                <td class="pt-5">
+                                    <p>Shipping</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4>Total</h4>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <h4>@Model.Order.OrderTotalPrice</h4>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
